@@ -128,7 +128,7 @@ public class ChainEffect
 	/**
 	 * 销毁
 	 */
-	public function destory():void
+	public function destroy():void
 	{
 		this.clear();
 		this.prevPos = null;
