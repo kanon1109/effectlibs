@@ -21,7 +21,7 @@ public class ChainEffectTest extends Sprite
 	public function ChainEffectTest() 
 	{
 		this.chainEffect = new ChainEffect(this);
-		this.chainEffect.chainLength = 12;
+		this.chainEffect.chainLength = 4;
 		this.chainEffect.move(mouseX, mouseY);
 		/*this.angle = 0;
 		this.r = 50 + Math.random() * 50;
@@ -35,6 +35,7 @@ public class ChainEffectTest extends Sprite
 	
 	private function keyDownHandler(event:KeyboardEvent):void 
 	{
+		trace("asdasd")
 		this.chainEffect.clear();
 	}
 	

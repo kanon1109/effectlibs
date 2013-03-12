@@ -15,7 +15,7 @@ public class ChainEffect
 	//需要删除的点的索引
 	protected var allowIndex:int;
 	//链子的长度
-	protected var _chainLength:int = 10;
+	protected var _chainLength:int = 4;
 	//存放位置的列表
 	protected var posDictionary:Dictionary;
 	//外部容器
