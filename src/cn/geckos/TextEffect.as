@@ -39,6 +39,7 @@ public class TextEffect
 	
 	/**
 	 * 创建计时器
+	 * @param	delay  间隔毫秒数
 	 */
 	private function addTimer(delay:Number):void
 	{
