@@ -21,9 +21,9 @@ public class ChainEffect
 	//外部容器
 	private var parent:DisplayObjectContainer;
 	//还未加速度前的位置
-	private var prevPos:Point;
+	private var _prevPos:Point;
 	//加了速度的位置
-	private var curPos:Point;
+	private var _curPos:Point;
 	//起始位置
 	private var x:Number;
 	private	var y:Number;
@@ -37,8 +37,8 @@ public class ChainEffect
 		this.posDictionary = new Dictionary();
 		this.x = this.y = 0;
 		this.vx = this.vy = 0;
-		this.prevPos = new Point();
-		this.curPos = new Point();
+		this._prevPos = new Point();
+		this._curPos = new Point();
 	}
 	
 	/**
@@ -62,14 +62,14 @@ public class ChainEffect
 	{
 		this.vx = (targetX - this.x) * ease;
 		this.vy = (targetY - this.y) * ease;
-		this.prevPos.x = this.x;
-		this.prevPos.y = this.y;
+		this._prevPos.x = this.x;
+		this._prevPos.y = this.y;
 		this.x += this.vx;
 		this.y += this.vy;
-		this.curPos.x = this.x;
-		this.curPos.y = this.y;
-		if (Point.distance(this.prevPos, this.curPos) > 1)
-			this.draw(this.curPos, this.prevPos);
+		this._curPos.x = this.x;
+		this._curPos.y = this.y;
+		if (Point.distance(this._prevPos, this._curPos) > 1)
+			this.draw(this._curPos, this._prevPos);
 		this.pointIndex++;
 		this.allowIndex++;
 		if (this.allowIndex >= this.pointIndex)
@@ -131,8 +131,8 @@ public class ChainEffect
 	public function destroy():void
 	{
 		this.clear();
-		this.prevPos = null;
-		this.curPos = null;
+		this._prevPos = null;
+		this._curPos = null;
 		this.posDictionary = null;
 		this.parent = null;
 	}
@@ -146,5 +146,14 @@ public class ChainEffect
 		_chainLength = value;
 		this.allowIndex = this.pointIndex - this.chainLength;
 	}
+	
+	/**
+	 * 上个链式节点的位置
+	 */
+	public function get prevPos():Point { return _prevPos; }
+	/**
+	 * 当前链式节点的位置
+	 */
+	public function get curPos():Point { return _curPos; }
 }
 }
