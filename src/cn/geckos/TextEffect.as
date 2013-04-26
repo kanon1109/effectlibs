@@ -80,7 +80,7 @@ public class TextEffect
 	/**
 	 * 销毁
 	 */
-	public function destory():void
+	public function destroy():void
 	{
 		this.text = null;
 		this.removeTimer();
