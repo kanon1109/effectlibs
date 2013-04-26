@@ -1,4 +1,4 @@
-package cn.geckos 
+package cn.geckos.effect 
 {
 import flash.events.TimerEvent;
 import flash.text.TextField;

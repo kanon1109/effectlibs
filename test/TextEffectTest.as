@@ -1,6 +1,6 @@
 package  
 {
-import cn.geckos.TextEffect;
+import cn.geckos.effect.TextEffect;
 import flash.display.Sprite;
 import flash.events.MouseEvent;
 import flash.text.TextField;

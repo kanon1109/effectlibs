@@ -1,6 +1,6 @@
 package  
 {
-import cn.geckos.ChainEffect;
+import cn.geckos.effect.ChainEffect;
 import flash.display.Sprite;
 import flash.events.Event;
 import flash.events.KeyboardEvent;

@@ -1,4 +1,4 @@
-package cn.geckos 
+package cn.geckos.effect 
 {
 	import flash.display.DisplayObject;
 	import flash.display.Shape;

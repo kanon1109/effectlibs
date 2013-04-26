@@ -1,6 +1,6 @@
 package  
 {
-import cn.geckos.BeeBehavior;
+import cn.geckos.effect.BeeBehavior;
 import flash.display.Sprite;
 import flash.events.MouseEvent;
 
