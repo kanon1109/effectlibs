@@ -14,19 +14,15 @@ public class BeeBehavior
 	//蜜蜂字典
 	private var beeDict:Dictionary;
 	//随机范围
-	private var minX:Number;
 	private var rangeX:Number;
-	private var minY:Number;
 	private var rangeY:Number;
 	//摩擦力
-	private var friction:Number = .9;
+	private var friction:Number = .95;
 	private static var shape:Shape;
-	public function BeeBehavior()
+	public function BeeBehavior(rangeX:Number, rangeY:Number)
 	{
-		this.minX = 2;
-		this.minY = 2;
-		this.rangeX = 4;
-		this.rangeY = 4;
+		this.rangeX = rangeX;
+		this.rangeY = rangeY;
 		this.beeDict = new Dictionary();
 		BeeBehavior.shape = new Shape();
 	}
@@ -76,14 +72,12 @@ public class BeeBehavior
 		for each (var o:Object in this.beeDict) 
 		{
 			var bee:DisplayObject = o.obj;
-			var vx:Number = o.vx;
-			var vy:Number = o.vy;
-			vx += Math.random() * rangeX - minX;
-			vy += Math.random() * rangeY - minY;
-			bee.x += vx;
-			bee.y += vy;
-			vx *= this.friction;
-			vy *= this.friction;
+			o.vx += Math.random() * rangeX - rangeX * .5;
+			o.vy += Math.random() * rangeY - rangeY * .5;
+			bee.x += o.vx;
+			bee.y += o.vy;
+			o.vx *= this.friction;
+			o.vy *= this.friction;
 		}
 	}
 	

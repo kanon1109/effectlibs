@@ -14,7 +14,7 @@ public class BeeBehaviorTest extends Sprite
 	private var isPause:Boolean;
 	public function BeeBehaviorTest() 
 	{
-		this.beeBehavior = new BeeBehavior();
+		this.beeBehavior = new BeeBehavior(2, 1);
 		for (var i:int = 0; i < 20; i++) 
 		{
 			var bee:Bee = new Bee();
