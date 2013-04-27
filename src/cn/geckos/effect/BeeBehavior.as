@@ -1,10 +1,9 @@
 package cn.geckos.effect 
 {
-	import flash.display.DisplayObject;
-	import flash.display.Shape;
-	import flash.display.Sprite;
-	import flash.events.Event;
-	import flash.utils.Dictionary;
+import flash.display.DisplayObject;
+import flash.display.Shape;
+import flash.events.Event;
+import flash.utils.Dictionary;
 /**
  * ...蜜蜂行为
  * @author Kanon
