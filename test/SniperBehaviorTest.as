@@ -13,7 +13,7 @@ public class SniperBehaviorTest extends Sprite
 	private var sniperBehavior:SniperBehavior;
 	public function SniperBehaviorTest() 
 	{
-		this.sniperBehavior = new SniperBehavior(.05, .08, 1);
+		this.sniperBehavior = new SniperBehavior(.03, .04, .3);
 		this.sniperBehavior.addWaveView(mc);
 		this.sniperBehavior.startWave();
 		stage.addEventListener(MouseEvent.CLICK, clickHandler);
