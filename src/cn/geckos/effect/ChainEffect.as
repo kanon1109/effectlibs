@@ -19,9 +19,6 @@ public class ChainEffect
 	private var prevPos:Point;
 	//加了速度的位置
 	private var curPos:Point;
-	//起始位置
-	private var x:Number;
-	private	var y:Number;
 	//线条颜色和粗细
 	protected var _lineColor:uint = 0xFFFFFF;
 	protected var _lineSize:uint = 8;
@@ -32,8 +29,6 @@ public class ChainEffect
 		this.pool = [];
 		this.prevPos = new Point();
 		this.curPos = new Point();
-		this.x = 0;
-		this.y = 0;
 	}
 	
 	/**
@@ -43,10 +38,8 @@ public class ChainEffect
 	 */
 	public function move(x:Number, y:Number):void
 	{
-		this.x = x;
-		this.y = y;
-		this.prevPos.x = this.x;
-		this.prevPos.y = this.y;
+		this.prevPos.x = x;
+		this.prevPos.y = y;
 	}
 	
 	/**
