@@ -74,7 +74,7 @@ public class SniperBehavior
 	{
 		if (!SniperBehavior.shape || 
 			SniperBehavior.shape.hasEventListener(Event.ENTER_FRAME))
-			return
+			return;
 		SniperBehavior.shape.addEventListener(Event.ENTER_FRAME, loop);
 	}
 	
