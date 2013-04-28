@@ -47,7 +47,7 @@ public class ChainEffect
 	 * @param	targetX  链式效果的目标x位置
 	 * @param	targetY  链式效果的目标y位置
 	 */
-	public function render(targetX:Number, targetY:Number):void
+	public function update(targetX:Number, targetY:Number):void
 	{
 		this.curPos.x = targetX;
 		this.curPos.y = targetY;
@@ -75,13 +75,13 @@ public class ChainEffect
 			this.prevPos.x = targetX;
 			this.prevPos.y = targetY;
 		}
-		this.update();
+		this.updateLine();
 	}
 	
 	/**
 	 * 更新线条状态
 	 */
-	private function update():void
+	private function updateLine():void
 	{
 		if (!this.lineDict) return;
 		var line:Line;

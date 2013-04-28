@@ -37,7 +37,7 @@ public class ChainEffectTest extends Sprite
 	
 	private function enterFrameHandler(event:Event):void 
 	{
-		this.chainEffect.render(mouseX, mouseY);
+		this.chainEffect.update(mouseX, mouseY);
 	}
 	
 }
