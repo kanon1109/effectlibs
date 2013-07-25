@@ -19,10 +19,6 @@ public class TextEffect
 	private var index:int;
 	//结束后的回调
 	public var completeFun:Function;
-	public function TextEffect()
-	{
-		
-	}
 	
 	/**
 	 * 逐行显示
@@ -71,7 +67,6 @@ public class TextEffect
 		if (this.timer)
 		{
 			this.timer.removeEventListener(TimerEvent.TIMER, timerHandler);
-			this.timer.stop();
 			this.timer.stop();
 			this.timer = null;
 		}
