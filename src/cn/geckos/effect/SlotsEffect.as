@@ -43,6 +43,8 @@ public class SlotsEffect
 	private var gapIndex:int;
 	//触发的间隔时间变长的增量
 	private var _delayAdd:int = 300;
+	//随机选择的索引
+	private var _randomIndex:int;
 	/**
 	 * 老虎机效果
 	 * @param	curIndex	初始化的位置索引。
@@ -63,6 +65,7 @@ public class SlotsEffect
 		if (delay <= 0) delay = 10;
 		//初始化赋值
 		this._curIndex = curIndex;
+		this._randomIndex = curIndex;
 		this.maxIndex = maxIndex;
 		this.gapIndex = Math.abs(gapIndex);
 		this.delay = delay;
@@ -143,22 +146,24 @@ public class SlotsEffect
 				this._curIndex = this.maxIndex;	
 		}
 		
-		trace(this.timer.currentCount, this.loop * this.maxIndex);
+		this._randomIndex = int(Math.random() * this.maxIndex + 1);
+		
 		//一个循环结束
 		if (this.timer.currentCount >= this.loop * this.maxIndex)
 		{
-			trace("this._curIndex, this.slowIndex", this._curIndex, this.slowIndex);
 			//是否进入了慢速模式
 			if (this._curIndex == this.slowIndex)
 			{
-				trace("slow");
 				this.slowing = true;
 				this.timer.delay += this._delayAdd;
 			}
 		}
 		
 		if (this.slowing && this._curIndex == this.targetIndex)
+		{
+			this._randomIndex = this.targetIndex;
 			this.stop();
+		}
 		
 		var length:int = this.funList.length;
 		for (var i:int = 0; i < length; i += 1) 
@@ -234,5 +239,10 @@ public class SlotsEffect
 	{
 		_delayAdd = value;
 	}
+	
+	/**
+	 * 随机索引
+	 */
+	public function get randomIndex():int{ return _randomIndex; }
 }
 }

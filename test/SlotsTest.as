@@ -25,20 +25,23 @@ public class SlotsTest extends Sprite
 	var index:int
 	private function clickHandler(event:MouseEvent):void 
 	{
-		//var index:int = int(Math.random() * 15 + 1);
-		//trace("index", index);
-		index++;
-		this.slotsEffect.show(10, true);
+		var index:int = int(Math.random() * 15 + 1);
+		trace("index", index);
+		//index++;
+		this.slotsEffect.show(index, true);
 	}
 	
 	/**
 	 * 选中某个mc
 	 * @param	mc
 	 */
-	private function selectMc():void
+	private function selectMc(isRandom:Boolean=false):void
 	{
 		this.stopAllMc();
-		var mc:MovieClip = this.getChildByName("b" + this.slotsEffect.curIndex) as MovieClip;
+		var index:int;
+		if (!isRandom) index = this.slotsEffect.curIndex; //显示线性滚动
+		else index = this.slotsEffect.randomIndex; //显示随机跳转
+		var mc:MovieClip = this.getChildByName("b" + index) as MovieClip;
 		mc.nextFrame();
 	}
 	
