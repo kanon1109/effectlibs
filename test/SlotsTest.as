@@ -28,7 +28,7 @@ public class SlotsTest extends Sprite
 		//var index:int = int(Math.random() * 15 + 1);
 		//trace("index", index);
 		index++;
-		this.slotsEffect.show(index, true);
+		this.slotsEffect.show(10, true);
 	}
 	
 	/**

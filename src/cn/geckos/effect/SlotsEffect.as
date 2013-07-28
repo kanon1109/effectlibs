@@ -6,9 +6,10 @@ import flash.utils.Timer;
  * ...老虎机 苹果机
  * 总结：
  * 无论起始索引是几，如何判断一个循环滚动是否结束。
- * if (this.timer.currentCount > 1 && 
- * 	   this.timer.currentCount % this.loop * this.maxIndex == 0)
- * 这个判断是核心，必须>1次，才做循环滚动判断，
+ * 
+ * if (this.timer.currentCount >= this.loop * this.maxIndex)
+ * 这个判断滚动次数是否大于快速滚动次数，才做慢速滚动判断，
+ * 
  * 否则如果碰到目标和起始索引相同的情况会出现一次也不滚的情况。
  * 
  * 通过改变timer.sdelay来实现慢速缓缓结束。
@@ -41,7 +42,7 @@ public class SlotsEffect
 	//在到达从目标索引前，提前gapIndex个索引触发慢速滚动。
 	private var gapIndex:int;
 	//触发的间隔时间变长的增量
-	private var delayAdd:int = 300;
+	private var _delayAdd:int = 300;
 	/**
 	 * 老虎机效果
 	 * @param	curIndex	初始化的位置索引。
@@ -142,18 +143,17 @@ public class SlotsEffect
 				this._curIndex = this.maxIndex;	
 		}
 		
-		trace(this.timer.currentCount , this.loop * this.maxIndex);
+		trace(this.timer.currentCount, this.loop * this.maxIndex);
 		//一个循环结束
-		if (this.timer.currentCount > 1 && 
-			this.timer.currentCount % this.loop * this.maxIndex == 0)
+		if (this.timer.currentCount >= this.loop * this.maxIndex)
 		{
-			trace("this._curIndex, this.slowIndex",this._curIndex, this.slowIndex);
+			trace("this._curIndex, this.slowIndex", this._curIndex, this.slowIndex);
 			//是否进入了慢速模式
 			if (this._curIndex == this.slowIndex)
 			{
-				trace("slow")
+				trace("slow");
 				this.slowing = true;
-				this.timer.delay += this.delayAdd;
+				this.timer.delay += this._delayAdd;
 			}
 		}
 		
@@ -225,5 +225,14 @@ public class SlotsEffect
 	 * 当前索引
 	 */
 	public function get curIndex():int{ return _curIndex; }
+	
+	/**
+	 * timer延迟的增量 用于慢速滚动模式中的速度
+	 */
+	public function get delayAdd():int{ return _delayAdd; }
+	public function set delayAdd(value:int):void 
+	{
+		_delayAdd = value;
+	}
 }
 }
