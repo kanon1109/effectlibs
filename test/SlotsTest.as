@@ -11,37 +11,53 @@ import flash.events.MouseEvent;
  */
 public class SlotsTest extends Sprite 
 {
-	private var slotsEffect:SlotsEffect
+	private var slotsEffect:SlotsEffect;
 	public function SlotsTest() 
 	{
 		this.slotsEffect = new SlotsEffect(10, 15, 2, 50);
 		this.slotsEffect.push(selectMc);
 		this.stopAllMc();
 		this.selectMc();
-		stage.addEventListener(MouseEvent.CLICK, clickHandler);
-		stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
+		
+		btn1.addEventListener(MouseEvent.CLICK, btn1ClickHandler);
+		btn2.addEventListener(MouseEvent.CLICK, btn2ClickHandler);
 	}
 	
-	var index:int
+	private function btn2ClickHandler(event:MouseEvent):void 
+	{
+		this.slotsEffect.splice(randomSelect);
+		this.slotsEffect.push(selectMc);
+		this.slotsEffect.show(int(Math.random() * 15 + 1), true);
+	}
+	
+	private function btn1ClickHandler(event:MouseEvent):void 
+	{
+		this.slotsEffect.splice(selectMc);
+		this.slotsEffect.push(randomSelect);
+		this.slotsEffect.show(int(Math.random() * 15 + 1), true);
+	}
+	
+	
 	private function clickHandler(event:MouseEvent):void 
 	{
-		var index:int = int(Math.random() * 15 + 1);
-		trace("index", index);
-		//index++;
-		this.slotsEffect.show(index, true);
+		
 	}
 	
 	/**
 	 * 选中某个mc
 	 * @param	mc
 	 */
-	private function selectMc(isRandom:Boolean=false):void
+	private function selectMc():void
 	{
 		this.stopAllMc();
-		var index:int;
-		if (!isRandom) index = this.slotsEffect.curIndex; //显示线性滚动
-		else index = this.slotsEffect.randomIndex; //显示随机跳转
-		var mc:MovieClip = this.getChildByName("b" + index) as MovieClip;
+		var mc:MovieClip = this.getChildByName("b" + this.slotsEffect.curIndex) as MovieClip;
+		mc.nextFrame();
+	}
+	
+	private function randomSelect():void
+	{
+		this.stopAllMc();
+		var mc:MovieClip = this.getChildByName("b" + this.slotsEffect.randomIndex) as MovieClip;
 		mc.nextFrame();
 	}
 	
