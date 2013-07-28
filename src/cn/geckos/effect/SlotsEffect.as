@@ -78,7 +78,7 @@ public class SlotsEffect
 	 * 添加计时器
 	 * @param	delay	运行间隔
 	 */
-	private function addTimer(delay):void
+	private function addTimer(delay:Number):void
 	{
 		if (!this.timer)
 		{
@@ -182,8 +182,8 @@ public class SlotsEffect
 	private function fixNumber(num:Number, min:Number, range:Number):Number
 	{
 		num %= range;
-        if (num < min) return num + range;
-        return num;
+		if (num < min) return num + range;
+		return num;
 	}
 	
 	/**
