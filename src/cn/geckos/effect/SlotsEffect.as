@@ -36,7 +36,7 @@ public class SlotsEffect
 	//运行间隔 毫秒
 	private var delay:Number;
 	//需要外部执行的方法列表
-	private var funList:Array;
+	private var funList:Vector.<Function>;
 	//是否进入了慢速滚动模式
 	private var slowing:Boolean;
 	//在到达从目标索引前，提前gapIndex个索引触发慢速滚动。
@@ -71,7 +71,7 @@ public class SlotsEffect
 		this.delay = delay;
 		this.loop = loop;
 		this.addTimer(delay);
-		this.funList = [];
+		this.funList = new Vector.<Function>();
 	}
 	
 	/**
