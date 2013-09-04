@@ -13,6 +13,7 @@ Thumbs.db
 /bin-release/*
 /bin/*
 /text/*.swf
+/test/flash1124
 
 .actionScriptProperties
 .flexProperties
