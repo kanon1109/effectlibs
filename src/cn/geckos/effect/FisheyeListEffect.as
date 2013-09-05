@@ -7,7 +7,6 @@ import flash.events.Event;
 import flash.events.MouseEvent;
 import flash.filters.BlurFilter;
 import flash.utils.Dictionary;
-import flash.utils.getTimer;
 /**
  * ...相册拖动效果
  * 图片必须保证相同大小
