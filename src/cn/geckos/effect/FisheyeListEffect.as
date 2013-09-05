@@ -5,6 +5,7 @@ import flash.display.DisplayObjectContainer;
 import flash.display.Stage;
 import flash.events.Event;
 import flash.events.MouseEvent;
+import flash.filters.BlurFilter;
 import flash.utils.Dictionary;
 /**
  * ...相册拖动效果
@@ -51,6 +52,8 @@ public class FisheyeListEffect
 	private var minSize:Number;
 	//是否显示alpha差别
 	private var _showAlpha:Boolean;
+	//是否显示模糊差别
+	private var _showBlur:Boolean;
 	public function FisheyeListEffect(stage:Stage, 
 									  resources:Vector.<DisplayObject>, 
 									  startX:Number = 0, 
@@ -75,6 +78,7 @@ public class FisheyeListEffect
 		this.middlePos = this.mathMiddlePosByDir(dir);
 		this.sortAry = [];
 		this.init(resources, dir);
+		this.checkRange();
 		this.sortDepth();
 		this.initEvent();
 	}
@@ -140,13 +144,13 @@ public class FisheyeListEffect
 									next:nextObj, 
 									dObj:dObj, 
 									dis: -1,
+									filters: null,
 									parent:dObj.parent, 
 									maxRangeX:dObj.x + (this.middlePos - first.x), 
 									maxRangeY:dObj.y + (this.middlePos - first.y),
 									minRangeX:dObj.x - (last.x - this.middlePos),
 									minRangeY:dObj.y - (last.y - this.middlePos) };
-			this.mathSize(this.minSize, this.maxSize, dObj);
-			
+			this.changeProp(dObj);
 			this.sortAry.push(this.dObjDict[dObj]);
 		}
 	}
@@ -209,7 +213,7 @@ public class FisheyeListEffect
 			
 			//计算尺寸
 			this.fixPos(dObj);
-			this.mathSize(this.minSize, this.maxSize, dObj);
+			this.changeProp(dObj);
 		}
 	}
 	
@@ -231,7 +235,7 @@ public class FisheyeListEffect
 				dObj.y = obj.curY + vy;
 			//计算尺寸
 			this.fixPos(dObj);
-			this.mathSize(this.minSize, this.maxSize, dObj);
+			this.changeProp(dObj);
 		}
 	}
 	
@@ -264,6 +268,7 @@ public class FisheyeListEffect
 			}
 			if (isOut)
 			{
+				dObj.filters = null;
 				if (dObj.parent)
 					dObj.parent.removeChild(dObj);
 			}
@@ -312,12 +317,10 @@ public class FisheyeListEffect
 	}
 	
 	/**
-	 * 计算尺寸
-	 * @param	min		最小尺寸
-	 * @param	max		最大尺寸
+	 * 改变显示对象的属性
 	 * @param	dObj	显示对象
 	 */
-	private function mathSize(min:Number, max:Number, dObj:DisplayObject):void
+	private function changeProp(dObj:DisplayObject):void
 	{
 		//距离
 		var dis:Number;
@@ -325,14 +328,42 @@ public class FisheyeListEffect
 			dis = this.mathDis(dObj.x, this.middlePos);
 		else if (this.dir == FisheyeListEffect.VERTICAL)
 			dis = this.mathDis(dObj.y, this.middlePos);
+		var obj:Object = this.dObjDict[dObj];
 		if (dis <= this.showRange)
 		{
-			dObj.scaleX = (this.showRange - dis) / this.showRange * (max - min) + min;
+			dObj.scaleX = this.mathPropValue(this.minSize, this.maxSize, dis);
 			dObj.scaleY = dObj.scaleX;
+			//使用模糊滤镜
+			if (this._showBlur)
+			{
+				var blur:Number = this.mathPropValue(20, 0, dis);
+				if (!obj.filters) 
+				{
+					obj.filters = new BlurFilter(blur, blur);
+				}
+				else
+				{
+					obj.filters.blurX = blur;
+					obj.filters.blurY = blur;
+				}
+				dObj.filters = [obj.filters];
+			}
+			//使用alpha
 			if (this._showAlpha) dObj.alpha = dObj.scaleX;
 		}
-		var obj:Object = this.dObjDict[dObj];
 		obj.dis = dis;
+	}
+	
+	/**
+	 * 计算改变的属性值
+	 * @param	min		希望改变属性的最小值
+	 * @param	max		希望改变属性的最大值
+	 * @param	dis		显示对象到中心点位置的距离
+	 * @return	属性值
+	 */
+	private function mathPropValue(min:Number, max:Number, dis:Number):Number
+	{
+		return (this.showRange - dis) / this.showRange * (max - min) + min;
 	}
 	
 	/**
@@ -341,13 +372,14 @@ public class FisheyeListEffect
 	private function sortDepth():void
 	{
 		//排序
-		this.sortAry.sortOn("dis", Array.NUMERIC | Array.DESCENDING);
-		var length:int = this.sortAry.length;
+		this.sortAry.sortOn("dis", Array.NUMERIC);
+		var i:int = this.sortAry.length - 1;
 		var obj:Object;
-		for (var i:int = 0; i < length; i += 1) 
+		//倒序最快
+		while (i--)
 		{
 			obj = this.sortAry[i];
-			if (obj.dis < this.showRange * .5)
+			if (obj.dis <= this.showRange * .5)
 				DisplayObjectContainer(obj.parent).addChild(obj.dObj);
 		}
 	}
@@ -382,6 +414,7 @@ public class FisheyeListEffect
 		var obj:Object;
 		for each (obj in this.dObjDict) 
 		{
+			obj.dObj.filters = null;
 			delete this.dObjDict[obj.dObj];
 		}
 		
@@ -405,6 +438,15 @@ public class FisheyeListEffect
 	public function set showAlpha(value:Boolean):void 
 	{
 		_showAlpha = value;
+	}
+	
+	/**
+	 * 是否显示模糊差别
+	 */
+	public function get showBlur():Boolean { return _showBlur; }
+	public function set showBlur(value:Boolean):void 
+	{
+		_showBlur = value;
 	}
 }
 }

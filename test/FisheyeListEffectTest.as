@@ -27,6 +27,8 @@ public class FisheyeListEffectTest extends Sprite
 											700, -80, 
 											.3, 1, 
 											FisheyeListEffect.HORIZONTAL);
+		this.fisheyeListEffect.showBlur = true;
+		this.fisheyeListEffect.showAlpha = true;
 	}
 	
 }
