@@ -33,6 +33,9 @@ public class FisheyeListEffect
 	//用于排序的列表
 	private var sortAry:Array;
 	//点击的位置坐标
+	private var mouseDownX:Number;
+	private var mouseDownY:Number;
+	//用于抛出的上一个鼠标位置
 	private var prevX:Number;
 	private var prevY:Number;
 	//摩擦力
@@ -41,10 +44,6 @@ public class FisheyeListEffect
 	private var dObjDict:Dictionary;
 	//是否鼠标点击
 	private var isMouseDown:Boolean;
-	//鼠标点击时的时间撮
-	private var mouseDownTime:int;
-	//鼠标抛的最短时间
-	private const throwTime:int = 350;
 	//运动方向
 	private var dir:int;
 	//显示范围
@@ -173,19 +172,25 @@ public class FisheyeListEffect
 	private function mouseUpHandler(event:MouseEvent):void 
 	{
 		this.isMouseDown = false;
-		if (getTimer() - this.mouseDownTime > this.throwTime) return;
 		if (this.dir == FisheyeListEffect.HORIZONTAL)
-			this.vx = (this.stage.mouseX - this.prevX) * .1;
+			this.vx = this.stage.mouseX - this.prevX;
 		else if (this.dir == FisheyeListEffect.VERTICAL)
-			this.vy = (this.stage.mouseY - this.prevY) * .1;
+			this.vy = this.stage.mouseY - this.prevY;
 	}
 	
 	private function mouseDonwHandler(event:MouseEvent):void 
 	{
-		this.prevX = this.stage.mouseX;
-		this.prevY = this.stage.mouseY;
+		if (this.dir == FisheyeListEffect.HORIZONTAL)
+		{
+			this.mouseDownX = this.stage.mouseX;
+			this.prevX = this.stage.mouseX;
+		}
+		else if (this.dir == FisheyeListEffect.VERTICAL)
+		{
+			this.mouseDownY = this.stage.mouseY;
+			this.prevY = this.stage.mouseY;
+		}
 		this.isMouseDown = true;
-		this.mouseDownTime = getTimer();
 		//设置显示对象的位置
 		this.setDisplayObjPos();
 	}
@@ -229,8 +234,10 @@ public class FisheyeListEffect
 	 */
 	private function drag():void
 	{
-		var vx:Number = this.stage.mouseX - this.prevX;
-		var vy:Number = this.stage.mouseY - this.prevY;
+		var vx:Number = this.stage.mouseX - this.mouseDownX;
+		var vy:Number = this.stage.mouseY - this.mouseDownY;
+		this.prevX = this.stage.mouseX;
+		this.prevY = this.stage.mouseY;
 		var obj:Object;
 		var dObj:DisplayObject;
 		for each (obj in this.dObjDict) 
