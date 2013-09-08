@@ -65,7 +65,7 @@ public class FisheyeListEffect
 									  gap:Number = 5, 
 									  minSize:Number = .5,
 									  maxSize:Number = 1,
-									  dir = FisheyeListEffect.HORIZONTAL)
+									  dir:int = FisheyeListEffect.HORIZONTAL)
 	{
 		this.stage = stage;
 		this.startX = startX;
@@ -91,7 +91,7 @@ public class FisheyeListEffect
 	 * @param	dir	方向
 	 * @return	中间位置
 	 */
-	private function mathMiddlePosByDir(dir):Number
+	private function mathMiddlePosByDir(dir:int):Number
 	{
 		if (dir == FisheyeListEffect.HORIZONTAL) 
 			return this.showRange * .5 + this.startX;
