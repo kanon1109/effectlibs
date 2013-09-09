@@ -4,6 +4,7 @@ import cn.geckos.effect.FisheyeListEffect;
 import flash.display.DisplayObject;
 import flash.display.MovieClip;
 import flash.display.Sprite;
+import flash.utils.getDefinitionByName;
 import net.hires.debug.Stats;
 /**
  * ...测试
@@ -17,10 +18,12 @@ public class FisheyeListEffectTest extends Sprite
 	{
 		this.addChild(new Stats());
 		this.resources = new Vector.<DisplayObject>();
-		var mc:Sprite
-		for (var i:int = 1; i <= 1000; i += 1)
+		var mc:Sprite;
+		var MyClass:Class;
+		for (var i:int = 0; i < 19; i += 1)
 		{
-			mc = new Mc();
+			MyClass = getDefinitionByName("mc" + i) as Class;
+			mc = new MyClass() as Sprite;
 			this.addChild(mc);
 			this.resources.push(mc);
 		}
