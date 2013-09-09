@@ -81,6 +81,7 @@ public class FisheyeListEffect
 		this.middlePos = this.mathMiddlePosByDir(dir);
 		this.sortAry = [];
 		this.init(resources, dir);
+		this.thow();
 		this.sortDepth();
 		this.initEvent();
 	}
