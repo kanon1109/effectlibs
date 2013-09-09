@@ -18,6 +18,7 @@
     <class path="src" />
     <class path="box2d\Source" />
     <class path="libs" />
+    <class path="test" />
   </classpaths>
   <!-- Build options -->
   <build>

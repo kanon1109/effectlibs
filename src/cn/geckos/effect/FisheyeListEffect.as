@@ -81,7 +81,6 @@ public class FisheyeListEffect
 		this.middlePos = this.mathMiddlePosByDir(dir);
 		this.sortAry = [];
 		this.init(resources, dir);
-		this.checkRange();
 		this.sortDepth();
 		this.initEvent();
 	}
@@ -218,6 +217,7 @@ public class FisheyeListEffect
 		var dObj:DisplayObject;
 		for each (obj in this.dObjDict) 
 		{
+			this.checkRange(obj);
 			dObj = obj.dObj;
 			dObj.x += this.vx;
 			dObj.y += this.vy;
@@ -241,6 +241,7 @@ public class FisheyeListEffect
 		var dObj:DisplayObject;
 		for each (obj in this.dObjDict) 
 		{
+			this.checkRange(obj);
 			dObj = obj.dObj;
 			if (this.dir == FisheyeListEffect.HORIZONTAL)
 				dObj.x = obj.curX + vx;
@@ -254,32 +255,30 @@ public class FisheyeListEffect
 	
 	/**
 	 * 判断运动范围
+	 * @param	obj	 每一个显示对象保存的数据
 	 */
-	private function checkRange():void
+	private function checkRange(obj:Object):void
 	{
-		var obj:Object;
-		var dObj:DisplayObject;
-		var isOut:Boolean;
-		for each (obj in this.dObjDict) 
+		var dObj:DisplayObject = obj.dObj;
+		if (this.dir == FisheyeListEffect.HORIZONTAL)
 		{
-			dObj = obj.dObj;
-			if (this.dir == FisheyeListEffect.HORIZONTAL)
+			if (dObj.x < this.startX - dObj.width * .5 || 
+				dObj.x > this.startX + this.showRange + dObj.width * .5)
 			{
-				if (dObj.x < this.startX - dObj.width * .5 || 
-					dObj.x > this.startX + this.showRange + dObj.width * .5)
-					isOut = true;
-				else
-					isOut = false;
+				dObj.filters = null;
+				if (dObj.parent)
+					dObj.parent.removeChild(dObj);
 			}
-			else if (this.dir == FisheyeListEffect.VERTICAL)
+			else
 			{
-				if (dObj.y < this.startY - dObj.height * .5 || 
-					dObj.y > this.startY + this.showRange + dObj.height * .5)
-					isOut = true;
-				else
-					isOut = false;
+				if (!dObj.parent)
+					DisplayObjectContainer(obj.parent).addChild(dObj);
 			}
-			if (isOut)
+		}
+		else if (this.dir == FisheyeListEffect.VERTICAL)
+		{
+			if (dObj.y < this.startY - dObj.height * .5 || 
+				dObj.y > this.startY + this.showRange + dObj.height * .5)
 			{
 				dObj.filters = null;
 				if (dObj.parent)
@@ -299,7 +298,6 @@ public class FisheyeListEffect
 	 */
 	private function loop(event:Event):void 
 	{
-		this.checkRange();
 		if (!this.isMouseDown)
 		{
 			this.thow();
