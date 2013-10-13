@@ -1,6 +1,8 @@
 package cn.geckos.effect 
 {
+import flash.display.CapsStyle;
 import flash.display.Graphics;
+import flash.display.LineScaleMode;
 import flash.geom.ColorTransform;
 /**
  * ...绘制2叉树
@@ -24,8 +26,8 @@ public class Tree
 								depth:int, branchWidth:Number):void
 	{
 		//最大分支数
-		var maxBranch:int = 4;
-		var maxAngle:Number = Math.PI * 0.5;
+		var maxBranch:int = 3;
+		var maxAngle:Number = Math.PI * .5;
 		//结束点的位置根据角度来倾斜
 		var endX:Number = startX + length * Math.cos(angle);
 		var endY:Number = startY + length * Math.sin(angle);
@@ -33,12 +35,13 @@ public class Tree
 		//根据深度显示颜色
 		if (depth > 2)
 		{
-			colorTf.redOffset = ((Math.random() * 64) + 64) >> 0;
+			colorTf.redOffset = (Math.random() * 64) + 64;
 			colorTf.greenOffset = 50;
 			colorTf.blueOffset = 25;
 		}
-		else colorTf.greenOffset = ((Math.random() * 64) + 128) >> 0;
-		graphics.lineStyle(branchWidth, colorTf.color); 
+		else colorTf.greenOffset = (Math.random() * 64) + 128;
+		graphics.lineStyle(branchWidth, colorTf.color, 1, true, 
+						   LineScaleMode.NORMAL, CapsStyle.ROUND); 
 		graphics.moveTo(startX, startY);
 		graphics.lineTo(endX, endY);
 		var newDepth:int = depth - 1;
@@ -46,7 +49,7 @@ public class Tree
 		var subBranches:int = Math.random() * (maxBranch - 1) + 1;
 		//树干宽度缩小
 		branchWidth *= .7;
-		for (var i:int = 0; i < subBranches; i += 1)
+		for (var i:int = 0; i <= subBranches; i += 1)
 		{
 			//新角度从一个范围中随机
 			var newAngle:Number = angle + Math.random() * maxAngle - maxAngle * 0.5;

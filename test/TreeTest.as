@@ -12,7 +12,7 @@ public class TreeTest extends Sprite
 	
 	public function TreeTest() 
 	{
-		Tree.draw(this.graphics, 275, 400, 60, -Math.PI / 2, 12, 18);
+		Tree.draw(this.graphics, 275, 400, 60, -Math.PI / 2, 12, 12);
 	}
 	
 }
