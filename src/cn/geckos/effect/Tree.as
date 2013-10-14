@@ -27,7 +27,8 @@ public class Tree
 	{
 		//最大分支数
 		var maxBranch:int = 3;
-		var maxAngle:Number = Math.PI * .5;
+		//最大角度为90度
+		var maxAngle:Number = 2 * Math.PI / 4;
 		//结束点的位置根据角度来倾斜
 		var endX:Number = startX + length * Math.cos(angle);
 		var endY:Number = startY + length * Math.sin(angle);
