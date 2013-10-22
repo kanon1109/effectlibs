@@ -122,6 +122,7 @@ public class NoiseText extends Sprite
         this.canvasBmpData.draw(this.tf, this.tfMatrix);
         
         var scale:Number = 5;
+        //随机一个数如果为0，则设置perlin噪点到一个较大的值，使文字有忽然跳动的感觉。
         if (int(Math.random() * 30) == 0) scale = 40;
         
         //将噪点滤镜添加进画布中
