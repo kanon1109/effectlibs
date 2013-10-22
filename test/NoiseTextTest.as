@@ -14,6 +14,7 @@ public class NoiseTextTest extends Sprite
 {
     private var t:TextField;
     private var noiseText:NoiseText;
+    private var isPause:Boolean;
     public function NoiseTextTest() 
     {
         var textFt:TextFormat = new TextFormat();
@@ -36,9 +37,12 @@ public class NoiseTextTest extends Sprite
     
     private function clickHandler(event:MouseEvent):void 
     {
-        this.noiseText.remove();
+        this.isPause = !this.isPause;
+        if (this.isPause) this.noiseText.pause();
+        else this.noiseText.show();
+        /*this.noiseText.remove();
         this.noiseText.init(this.t);
-        this.noiseText.show();
+        this.noiseText.show();*/
     }
     
 }
