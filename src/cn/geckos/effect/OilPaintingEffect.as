@@ -27,6 +27,8 @@ public class OilPaintingEffect
     
     /**
      * 移动笔触
+     * @param	posX    当前绘制的x坐标
+     * @param	posY    当前绘制的y坐标
      */
     public function paintMove(posX:Number, posY:Number):void
     {
