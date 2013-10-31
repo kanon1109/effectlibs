@@ -19,11 +19,8 @@ public class OilPaintingEffect
     private var _color:uint;
     //图形
     private var graphics:Graphics;
-    //舞台
-    private var stage:Stage;
-    public function OilPaintingEffect(stage:Stage, graphics:Graphics, color:uint = 0) 
+    public function OilPaintingEffect(graphics:Graphics, color:uint = 0) 
     {
-        this.stage = stage;
         this.graphics = graphics;
         this.color = color;
     }
@@ -31,10 +28,11 @@ public class OilPaintingEffect
     /**
      * 移动笔触
      */
-    public function paintMove():void
+    public function paintMove(posX:Number, posY:Number):void
     {
         //求出一次移动时2个坐标的距离 
-        var distance:Number = Math.sqrt(Math.pow(this.prevX - this.startPosX, 2) + Math.pow(this.prevY - this.startPosY, 2));
+        var distance:Number = Math.sqrt(Math.pow(this.prevX - this.startPosX, 2) + 
+                                        Math.pow(this.prevY - this.startPosY, 2));
         //飞溅出的墨汁点的位置增量
         var a:Number = distance * 10 * (Math.pow(Math.random(), 2) - 0.5); //根据移动距离大小计算墨汁点起始位置的增量
         var r:Number = Math.random() - 0.5; //随机一个增量墨点结束位置的增量
@@ -48,13 +46,14 @@ public class OilPaintingEffect
         this.startPosX = this.prevX;
         this.startPosY = this.prevY;
         
-        this.prevX = this.stage.mouseX;
-        this.prevY = this.stage.mouseY;
+        this.prevX = posX;
+        this.prevY = posY;
         
         //绘制出带贝塞尔曲线的线条
         this.graphics.moveTo(this.startPosX, this.startPosY);
         this.graphics.curveTo(disX, disY, this.prevX, this.prevY);
-        this.graphics.lineStyle(((Math.random() + 20 / 10 - 0.5) * size + (1 - Math.random() + 30 / 20 - 0.5) * size), 
+        this.graphics.lineStyle(((Math.random() + 20 / 10 - 0.5) * size + 
+                                 (1 - Math.random() + 30 / 20 - 0.5) * size), 
                                   this.color, 1, false, LineScaleMode.NONE, CapsStyle.ROUND);   
         //增加周围墨点
         this.graphics.moveTo(this.startPosX + a, this.startPosY + a);

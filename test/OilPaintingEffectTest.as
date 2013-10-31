@@ -13,7 +13,7 @@ public class OilPaintingEffectTest extends Sprite
     private var isDown:Boolean;
     public function OilPaintingEffectTest() 
     {
-        this.oilPaintingEffect = new OilPaintingEffect(stage, this.graphics, 0);
+        this.oilPaintingEffect = new OilPaintingEffect(this.graphics, 0);
         stage.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
         stage.addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
         stage.addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
@@ -27,7 +27,7 @@ public class OilPaintingEffectTest extends Sprite
     private function mouseMoveHandler(event:MouseEvent):void 
     {
         if (this.isDown)
-            this.oilPaintingEffect.paintMove();
+            this.oilPaintingEffect.paintMove(mouseX, mouseY);
     }
     
     private function mouseDownHandler(event:MouseEvent):void 
