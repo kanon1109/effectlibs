@@ -63,6 +63,7 @@ public class CalligraphyEffect
      */
     private function resetTip():void
     {
+		this.clearVect();
         this.hairsVect = new Vector.<Hair>();
         var hairNum:int = this.defaultBrushSize * 2;
         var range:Number = this.defaultBrushSize / 2;
@@ -78,7 +79,6 @@ public class CalligraphyEffect
         var c:Number = this.random(Math.PI * 2);
         var hair:Hair;
         var pos:Point;
-        trace("hairNum", hairNum);
         for (var i:int = 0; i < hairNum; i += 1) 
         {
             rx = this.random(range);
@@ -158,9 +158,11 @@ public class CalligraphyEffect
         this.curPoint.y = posY;
         var stroke:Point = this.curPoint.subtract(this.latestPoint);
         var length:int = this.hairsVect.length;
+		var hair:Hair;
         for (var i:int = 0; i < length; i += 1)
         {
-            this.hairsVect[i].update(stroke);
+			hair = this.hairsVect[i];
+            hair.update(stroke);
         }
         this.latestStrokeLength = stroke.length;
     }
@@ -171,9 +173,11 @@ public class CalligraphyEffect
     public function draw():void
     {
         var length:int = this.hairsVect.length;
+		var hair:Hair;
         for (var i:int = 0; i < length; i += 1)
         {
-            this.hairsVect[i].draw(this.graphics, this.color);
+			hair = this.hairsVect[i];
+            hair.draw(this.graphics, this.color);
         }
         //如果瞬间距离超过一定长度则出现飞溅的效果
         if (this.latestStrokeLength > SPLASH_DIS)
@@ -190,6 +194,32 @@ public class CalligraphyEffect
     {
         return Math.random() * (max - min) + min;
     }
+	
+	/**
+	 * 清除vect内容
+	 */
+	private function clearVect():void
+	{
+		if (!this.hairsVect) return;
+		var length:int = this.hairsVect.length;
+		var hair:Hair;
+        for (var i:int = length - 1; i >= 0; i -= 1)
+        {
+			hair = this.hairsVect[i];
+			hair.destroy();
+			this.hairsVect.splice(i, 1);
+		}
+	}
+	
+	/**
+	 * 销毁方法
+	 */
+	public function destroy():void
+	{
+		this.clearVect();
+		this.latestPoint = null;
+		this.curPoint = null;
+	}
 }
 }
 import flash.display.CapsStyle;
@@ -272,4 +302,13 @@ class Hair
     {
         return n > max ? max : n < min ? min : n;
     }
+	
+	/**
+	 * 销毁
+	 */
+	public function destroy():void
+	{
+		this.latestPoint = null;
+		this.curPos = null;
+	}
 }

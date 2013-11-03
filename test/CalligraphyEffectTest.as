@@ -4,6 +4,7 @@ import cn.geckos.effect.CalligraphyEffect;
 import flash.display.Sprite;
 import flash.events.Event;
 import flash.events.MouseEvent;
+import net.hires.debug.Stats;
 /**
  * ...毛笔效果测试
  * @author Kanon
@@ -11,14 +12,23 @@ import flash.events.MouseEvent;
 public class CalligraphyEffectTest extends Sprite 
 {
 	private var isDown:Boolean;
-	private var calligraphyEffect:CalligraphyEffect
+	private var calligraphyEffect:CalligraphyEffect;
 	public function CalligraphyEffectTest() 
 	{
 		this.calligraphyEffect = new CalligraphyEffect(this.graphics, 0);
 		stage.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
         stage.addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
+        stage.addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
         stage.addEventListener(MouseEvent.DOUBLE_CLICK, doubleClickHandler);
-        this.addEventListener(Event.ENTER_FRAME, loop);
+        //this.addEventListener(Event.ENTER_FRAME, loop);
+		this.addChild(new Stats());
+	}
+	
+	private function mouseMoveHandler(event:MouseEvent):void 
+	{
+		 this.calligraphyEffect.update(mouseX, mouseY);
+        if (this.isDown)
+			this.calligraphyEffect.draw();
 	}
     
     private function doubleClickHandler(event:MouseEvent):void 
@@ -40,6 +50,7 @@ public class CalligraphyEffectTest extends Sprite
     
     private function mouseDownHandler(event:MouseEvent):void 
     {
+		this.graphics.clear();
         this.isDown = true;
 		this.calligraphyEffect.onBrushDown();
     }
