@@ -15,7 +15,9 @@ public class CalligraphyEffectTest extends Sprite
 	private var calligraphyEffect:CalligraphyEffect;
 	public function CalligraphyEffectTest() 
 	{
-		this.calligraphyEffect = new CalligraphyEffect(this.graphics, 0);
+		//this.calligraphyEffect = new CalligraphyEffect(this.graphics, 0);
+        stage.doubleClickEnabled = true;
+		this.calligraphyEffect = new CalligraphyEffect(this, 550, 400);
 		stage.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
         stage.addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
         stage.addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
@@ -26,14 +28,14 @@ public class CalligraphyEffectTest extends Sprite
 	
 	private function mouseMoveHandler(event:MouseEvent):void 
 	{
-		 this.calligraphyEffect.update(mouseX, mouseY);
+		this.calligraphyEffect.update(mouseX, mouseY);
         if (this.isDown)
 			this.calligraphyEffect.draw();
 	}
     
     private function doubleClickHandler(event:MouseEvent):void 
     {
-        this.graphics.clear();
+        this.calligraphyEffect.clear();
     }
     
     private function loop(event:Event):void 
@@ -50,7 +52,7 @@ public class CalligraphyEffectTest extends Sprite
     
     private function mouseDownHandler(event:MouseEvent):void 
     {
-		this.graphics.clear();
+		//this.calligraphyEffect.clear();
         this.isDown = true;
 		this.calligraphyEffect.onBrushDown();
     }

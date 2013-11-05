@@ -1,7 +1,13 @@
 package cn.geckos.effect 
 {
+import flash.display.Bitmap;
+import flash.display.BitmapData;
+import flash.display.DisplayObjectContainer;
 import flash.display.Graphics;
+import flash.display.Shape;
+import flash.display.Sprite;
 import flash.geom.Point;
+import flash.geom.Rectangle;
 /**
  * ...书法效果
  * 参考 akm2's "Shodou" http://jsdo.it/akm2/9ClT js版的书道
@@ -12,19 +18,19 @@ public class CalligraphyEffect
     //画布
     private var graphics:Graphics;
     //画笔颜色
-    private var color:uint;
+    private var _color:uint;
     //默认笔触尺寸
-    private var defaultBrushSize:int;
+    private var _defaultBrushSize:int;
     //最大笔触尺寸
-    private var maxBrushSize:int;
+    private var _maxBrushSize:int;
     //最小笔触尺寸
-    private var minBrushSize:int;
+    private var _minBrushSize:int;
     //墨量
-    private var inkAmount:Number;
+    private var _inkAmount:Number;
     //写字时飞溅的墨汁的范围
-    private var splashRange:Number;
+    private var _splashRange:Number;
     //飞沫最大尺寸
-    private var splashInkSize:Number;
+    private var _splashInkSize:Number;
     //毛笔的毛量数组
     private var hairsVect:Vector.<Hair>;
     //最新的坐标
@@ -35,7 +41,18 @@ public class CalligraphyEffect
     private var latestStrokeLength:Number;
     //飞溅需要的距离
     private static const SPLASH_DIS:int = 75;
-    public function CalligraphyEffect(graphics:Graphics, 
+    //位图数据
+    private var bitmapData:BitmapData;
+    private var bitmap:Bitmap;
+    //外部容器
+    private var container:DisplayObjectContainer;
+    //清空用的矩形范围
+    private var rect:Rectangle;
+    //绘制用的shape
+    private var shape:Shape;
+    public function CalligraphyEffect(container:DisplayObjectContainer,
+                                      width:Number = 550,
+                                      height:Number = 400,
                                       color:uint = 0,
                                       defaultBrushSize:int = 25, 
                                       maxBrushSize:int = 35, 
@@ -44,17 +61,27 @@ public class CalligraphyEffect
                                       splashRange:Number = 75,
                                       splashInkSize:Number = 5)
     {
-        this.graphics = graphics;
+        this.container = container;
         this.color = color;
-        this.defaultBrushSize = defaultBrushSize;
-        this.maxBrushSize = maxBrushSize;
-        this.minBrushSize = minBrushSize;
-        this.inkAmount = inkAmount;
-        this.splashRange = splashRange;
-        this.splashInkSize = splashInkSize;
+        this._defaultBrushSize = defaultBrushSize;
+        this._maxBrushSize = maxBrushSize;
+        this._minBrushSize = minBrushSize;
+        this._inkAmount = inkAmount;
+        this._splashRange = splashRange;
+        this._splashInkSize = splashInkSize;
         this.latestStrokeLength = 0;
         this.latestPoint = new Point();
         this.curPoint = new Point();
+        
+        this.shape = new Shape();
+        this.graphics = shape.graphics;
+        this.container.addChild(this.shape);
+        
+        this.bitmapData = new BitmapData(width, height, true, 0);
+        this.bitmap = new Bitmap(this.bitmapData, "auto", true);
+        this.container.addChild(this.bitmap);
+        
+        this.rect = new Rectangle(0, 0, width, height);
         this.resetTip();
     }
     
@@ -65,8 +92,8 @@ public class CalligraphyEffect
     {
 		this.clearVect();
         this.hairsVect = new Vector.<Hair>();
-        var hairNum:int = this.defaultBrushSize * 2;
-        var range:Number = this.defaultBrushSize / 2;
+        var hairNum:int = this._defaultBrushSize * 2;
+        var range:Number = this._defaultBrushSize / 2;
         var rx:Number;
         var ry:Number; 
         var c0:Number; 
@@ -90,7 +117,7 @@ public class CalligraphyEffect
             sv = Math.sin(c);
             pos = new Point(this.latestPoint.x + x0 * cv - y0 * sv, 
                             this.latestPoint.y + x0 * sv + y0 * cv);
-            hair = new Hair(pos, 5, this.inkAmount);
+            hair = new Hair(pos, 5, this._inkAmount);
             this.hairsVect.push(hair);
         }
     }
@@ -142,7 +169,10 @@ public class CalligraphyEffect
 	public function onBrushDown():void
 	{
 		this.resetTip();
-		this.splash(this.splashRange, this.splashInkSize);
+		this.splash(this._splashRange, this._splashInkSize);
+        
+        this.bitmapData.draw(this.shape, null, null, null, null, true);
+        this.graphics.clear();
 	}
     
     /**
@@ -181,7 +211,10 @@ public class CalligraphyEffect
         }
         //如果瞬间距离超过一定长度则出现飞溅的效果
         if (this.latestStrokeLength > SPLASH_DIS)
-            this.splash(this.splashRange, this.splashInkSize);
+            this.splash(this._splashRange, this._splashInkSize);
+            
+        this.bitmapData.draw(this.shape, null, null, null, null, true);
+        this.graphics.clear();
     }
     
     /**
@@ -210,16 +243,104 @@ public class CalligraphyEffect
 			this.hairsVect.splice(i, 1);
 		}
 	}
+    
+    /**
+     * 清除
+     */
+    public function clear():void
+    {
+        if (this.bitmapData)
+            this.bitmapData.fillRect(this.rect, 0xFFFFFF);
+    }
 	
 	/**
 	 * 销毁方法
 	 */
 	public function destroy():void
 	{
+		this.clear();
 		this.clearVect();
+        
+        if (this.shape.parent)
+        {
+            this.shape.graphics.clear();
+            this.shape.parent.removeChild(this.shape);
+        }
+        this.shape = null;
+        if (this.bitmap.parent)
+            this.bitmap.parent.removeChild(this.bitmap);
+		this.bitmap = null;
+        
+        this.bitmapData.dispose();
+		this.bitmapData = null;
+        this.container = null;
 		this.latestPoint = null;
 		this.curPoint = null;
+        this.rect = null;
 	}
+    
+    /**
+     * 画笔颜色
+     */
+    public function get color():uint { return _color; };
+    public function set color(value:uint):void 
+    {
+        _color = value;
+    }
+    
+    /**
+     * 最大笔触尺寸
+     */
+    public function get maxBrushSize():int { return _maxBrushSize; };
+    public function set maxBrushSize(value:int):void 
+    {
+        _maxBrushSize = value;
+    }
+    
+    /**
+     * 最小笔触尺寸
+     */
+    public function get minBrushSize():int{return _minBrushSize;}
+    public function set minBrushSize(value:int):void 
+    {
+        _minBrushSize = value;
+    }
+    
+    /**
+     * 墨量
+     */
+    public function get inkAmount():Number { return _inkAmount; };
+    public function set inkAmount(value:Number):void 
+    {
+        _inkAmount = value;
+    }
+    
+    /**
+     * 写字时飞溅的墨汁的范围
+     */
+    public function get splashRange():Number { return _splashRange; }
+    public function set splashRange(value:Number):void 
+    {
+        _splashRange = value;
+    }
+    
+    /**
+     * 飞沫最大尺寸
+     */
+    public function get splashInkSize():Number { return _splashInkSize; };
+    public function set splashInkSize(value:Number):void 
+    {
+        _splashInkSize = value;
+    }
+    
+    /**
+     * 默认笔触尺寸
+     */
+    public function get defaultBrushSize():int { return _defaultBrushSize; };
+    public function set defaultBrushSize(value:int):void 
+    {
+        _defaultBrushSize = value;
+    }
 }
 }
 import flash.display.CapsStyle;
