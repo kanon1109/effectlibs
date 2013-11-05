@@ -9,13 +9,13 @@ import flash.geom.Point;
  * ...绳子效果
  * @author Kanon
  */
-public class SopeTest extends Sprite 
+public class RopeTest extends Sprite 
 {
     private var rope:Rope;
     private var sp:Point;
     private var ep:Point;
     private var curMc:Sprite;
-    public function SopeTest() 
+    public function RopeTest() 
     {
         this.sp = new Point(mc1.x, mc1.y);
         this.ep = new Point(mc2.x, mc2.y);

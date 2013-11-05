@@ -20,9 +20,9 @@ public class CalligraphyEffectTest extends Sprite
 		this.calligraphyEffect = new CalligraphyEffect(this, 550, 400);
 		stage.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
         stage.addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
-        stage.addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
+        //stage.addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
         stage.addEventListener(MouseEvent.DOUBLE_CLICK, doubleClickHandler);
-        //this.addEventListener(Event.ENTER_FRAME, loop);
+        this.addEventListener(Event.ENTER_FRAME, loop);
 		this.addChild(new Stats());
 	}
 	
