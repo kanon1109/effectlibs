@@ -80,6 +80,7 @@ public class FisheyeListEffect
 									  dir:int = FisheyeListEffect.HORIZONTAL)
 	{
 		this.stage = stage;
+		this.resources = resources;
 		this.startX = startX;
 		this.startY = startY;
 		this.gap = gap;
@@ -202,12 +203,12 @@ public class FisheyeListEffect
 			this.prevY = this.stage.mouseY;
 		}
 		this.isMouseDown = true;
-		//设置显示对象的位置
+		//保存当前显示对象的位置
 		this.setDisplayObjPos();
 	}
 	
 	/**
-	 * 设置显示对象的位置
+	 * 保存当前显示对象的位置
 	 */
 	private function setDisplayObjPos():void
 	{
@@ -234,7 +235,6 @@ public class FisheyeListEffect
 			dObj = obj.dObj;
 			dObj.x += this.vx;
 			dObj.y += this.vy;
-			
 			//计算尺寸
 			this.fixPos(dObj);
 			this.changeProp(dObj);
@@ -250,7 +250,17 @@ public class FisheyeListEffect
 		var vy:Number = this.stage.mouseY - this.mouseDownY;
 		this.prevX = this.stage.mouseX;
 		this.prevY = this.stage.mouseY;
-		var obj:Object;
+		this.move(vx, vy);
+	}
+    
+    /**
+     * 移动所以的显示对象
+     * @param	vx      移动的x方向距离
+     * @param	vy      移动的y方向距离
+     */
+    private function move(vx:Number, vy:Number):void
+    {
+        var obj:Object;
 		var dObj:DisplayObject;
 		for each (obj in this.dObjDict) 
 		{
@@ -260,11 +270,11 @@ public class FisheyeListEffect
 				dObj.x = obj.curX + vx;
 			else if (this.dir == FisheyeListEffect.VERTICAL)
 				dObj.y = obj.curY + vy;
-			//计算尺寸
+			//修正位置
 			this.fixPos(dObj);
 			this.changeProp(dObj);
 		}
-	}
+    }
 	
 	/**
 	 * 判断运动范围
@@ -418,6 +428,61 @@ public class FisheyeListEffect
 	{
 		return Math.abs(pos1 - pos2);
 	}
+    
+    /**
+     * 根据图片索引显示图片位置
+     * @param	index       索引 从0开始
+     */
+    public function setPosByIndex(index:int):void
+    {
+        if (!this.resources) return;
+        if (index < 0) index = 0;
+        if (index > this.resources.length - 1) index = this.resources.length - 1;
+        //保存当前显示对象的位置
+		this.setDisplayObjPos();
+        var dObj:DisplayObject = this.resources[index];
+        //计算距离中间位置的距离
+        if (this.dir == FisheyeListEffect.HORIZONTAL)
+            this.move(this.middlePos - dObj.x, 0);
+        else if (this.dir == FisheyeListEffect.VERTICAL)
+            this.move(0, this.middlePos - dObj.y);
+    }
+    
+    /**
+     * 获取当前靠近中间的显示对象索引
+     * @return      显示对象索引 如果未初始化列表则返回-1;
+     */
+    public function getCurPosIndex():int
+    {
+        if (!this.resources) return -1;
+        //保存当前显示对象与中间位置的距离列表
+        var length:int = this.resources.length;
+        var dObj:DisplayObject;
+        //当前距离
+        var curDis:Number;
+        //当前最短距离
+        var minDis:Number = -1;
+        //当前距离最小的索引
+        var index:int = 0;
+        for (var i:int = 0; i < length; i += 1) 
+        {
+            dObj = this.resources[i];
+            if (this.dir == FisheyeListEffect.HORIZONTAL)
+                curDis = Math.abs(this.middlePos - dObj.x);
+            else if (this.dir == FisheyeListEffect.VERTICAL)
+                curDis = Math.abs(this.middlePos - dObj.y);
+            if (minDis < 0) 
+            {
+                minDis = curDis;
+            }
+            else if (curDis < minDis) 
+            {
+                minDis = curDis;
+                index = i;
+            }
+        }
+        return index;
+    }
 	
 	/**
 	 * 销毁

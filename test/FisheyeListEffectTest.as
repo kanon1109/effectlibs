@@ -2,8 +2,9 @@
 {
 import cn.geckos.effect.FisheyeListEffect;
 import flash.display.DisplayObject;
-import flash.display.MovieClip;
 import flash.display.Sprite;
+import flash.events.KeyboardEvent;
+import flash.events.MouseEvent;
 import flash.utils.getDefinitionByName;
 import net.hires.debug.Stats;
 /**
@@ -34,7 +35,16 @@ public class FisheyeListEffectTest extends Sprite
 											FisheyeListEffect.HORIZONTAL);
 		this.fisheyeListEffect.showBlur = true;
 		this.fisheyeListEffect.showAlpha = true;
+        
+        stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDownHandler);
+        
 	}
+    
+    private function onKeyDownHandler(event:KeyboardEvent):void 
+    {
+        //this.fisheyeListEffect.setPosByIndex(1);
+        trace(this.fisheyeListEffect.getCurPosIndex());
+    }
 	
 }
 }
