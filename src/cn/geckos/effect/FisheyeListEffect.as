@@ -57,6 +57,18 @@ public class FisheyeListEffect
 	private var _showAlpha:Boolean;
 	//是否显示模糊差别
 	private var _showBlur:Boolean;
+    /**
+     * 初始化鱼眼效果构造函数
+     * @param	stage           效果所在的舞台
+     * @param	resources       显示对象资源列表
+     * @param	startX          最左边坐标
+     * @param	startY          最上边坐标
+     * @param	showRange       鱼眼显示范围
+     * @param	gap             显示对象之间的排列间隔
+     * @param	minSize         当滚动到最左边或者最右边时，显示对象最小的尺寸scale
+     * @param	maxSize         当滚动到中间时，显示对象最大的尺寸scale
+     * @param	dir             纵向滚动还是横向滚动 0横向，1纵向
+     */
 	public function FisheyeListEffect(stage:Stage, 
 									  resources:Vector.<DisplayObject>, 
 									  startX:Number = 0, 
