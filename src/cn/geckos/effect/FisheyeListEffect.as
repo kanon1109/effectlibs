@@ -57,6 +57,12 @@ public class FisheyeListEffect
 	private var _showAlpha:Boolean;
 	//是否显示模糊差别
 	private var _showBlur:Boolean;
+	//是否在滚动中
+	private var isScroll:Boolean;
+	//滚动显示对象
+	private var scrollObj:DisplayObject;
+	//是否在自动滚动
+	private var isAutoScroll:Boolean;
     /**
      * 初始化鱼眼效果构造函数
      * @param	stage           效果所在的舞台
@@ -69,7 +75,7 @@ public class FisheyeListEffect
      * @param	maxSize         当滚动到中间时，显示对象最大的尺寸scale
      * @param	dir             纵向滚动还是横向滚动 0横向，1纵向
      */
-	public function FisheyeListEffect(stage:Stage, 
+	public function FisheyeListEffect(stage:Stage,
 									  resources:Vector.<DisplayObject>, 
 									  startX:Number = 0, 
 									  startY:Number = 0, 
@@ -94,9 +100,8 @@ public class FisheyeListEffect
 		this.middlePos = this.mathMiddlePosByDir(dir);
 		this.sortAry = [];
 		this.init(resources, dir);
-		this.thow();
+		this.update();
 		this.sortDepth();
-		this.initEvent();
 	}
 	
 	/**
@@ -172,42 +177,6 @@ public class FisheyeListEffect
 	}
 	
 	/**
-	 * 初始化
-	 */
-	private function initEvent():void
-	{
-		this.stage.addEventListener(MouseEvent.MOUSE_DOWN, mouseDonwHandler);
-		this.stage.addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
-		this.stage.addEventListener(Event.ENTER_FRAME, loop);
-	}
-	
-	private function mouseUpHandler(event:MouseEvent):void 
-	{
-		this.isMouseDown = false;
-		if (this.dir == FisheyeListEffect.HORIZONTAL)
-			this.vx = this.stage.mouseX - this.prevX;
-		else if (this.dir == FisheyeListEffect.VERTICAL)
-			this.vy = this.stage.mouseY - this.prevY;
-	}
-	
-	private function mouseDonwHandler(event:MouseEvent):void 
-	{
-		if (this.dir == FisheyeListEffect.HORIZONTAL)
-		{
-			this.mouseDownX = this.stage.mouseX;
-			this.prevX = this.stage.mouseX;
-		}
-		else if (this.dir == FisheyeListEffect.VERTICAL)
-		{
-			this.mouseDownY = this.stage.mouseY;
-			this.prevY = this.stage.mouseY;
-		}
-		this.isMouseDown = true;
-		//保存当前显示对象的位置
-		this.setDisplayObjPos();
-	}
-	
-	/**
 	 * 保存当前显示对象的位置
 	 */
 	private function setDisplayObjPos():void
@@ -225,8 +194,9 @@ public class FisheyeListEffect
 	/**
 	 * 抛出
 	 */
-	private function thow():void
+	private function update():void
 	{
+		if (this.isMouseDown) return;
 		var obj:Object;
 		var dObj:DisplayObject;
 		for each (obj in this.dObjDict) 
@@ -239,6 +209,12 @@ public class FisheyeListEffect
 			this.fixPos(dObj);
 			this.changeProp(dObj);
 		}
+		if (!this.isAutoScroll &&
+			!this.isScroll)
+		{
+			this.vx *= this._friction;
+			this.vy *= this._friction;
+		}
 	}
 	
 	/**
@@ -246,6 +222,7 @@ public class FisheyeListEffect
 	 */
 	private function drag():void
 	{
+		if (!this.isMouseDown) return;
 		var vx:Number = this.stage.mouseX - this.mouseDownX;
 		var vy:Number = this.stage.mouseY - this.mouseDownY;
 		this.prevX = this.stage.mouseX;
@@ -313,22 +290,6 @@ public class FisheyeListEffect
 					DisplayObjectContainer(obj.parent).addChild(dObj);
 			}
 		}
-	}
-	
-	/**
-	 * 主循环
-	 * @param	event
-	 */
-	private function loop(event:Event):void 
-	{
-		if (!this.isMouseDown)
-		{
-			this.thow();
-			this.vx *= this._friction;
-			this.vy *= this._friction;
-		}
-		else this.drag();
-		this.sortDepth();
 	}
 	
 	/**
@@ -428,6 +389,34 @@ public class FisheyeListEffect
 	{
 		return Math.abs(pos1 - pos2);
 	}
+	
+	/**
+	 * 滚动
+	 */
+	private function scroll():void 
+	{
+		if (this.isScroll)
+		{
+			if (this.dir == FisheyeListEffect.HORIZONTAL)
+			{
+				this.vx = (this.middlePos - this.scrollObj.x) * .1;
+				if (Math.abs(this.vx) < 1) 
+				{
+					this.vx = 0;
+					this.isScroll = false;
+				}
+			}
+			else if (this.dir == FisheyeListEffect.VERTICAL)
+			{
+				this.vy = (this.middlePos - this.scrollObj.y) * .1;
+				if (Math.abs(this.vy) < 1) 
+				{
+					this.vy = 0;
+					this.isScroll = false;
+				}
+			}
+		}
+	}
     
     /**
      * 根据图片索引显示图片位置
@@ -485,15 +474,71 @@ public class FisheyeListEffect
     }
 	
 	/**
+	 * 鼠标释放
+	 */
+	public function mouseUp():void
+	{
+		this.isMouseDown = false;
+		this.isScroll = false;
+		if (this.dir == FisheyeListEffect.HORIZONTAL)
+			this.vx = this.stage.mouseX - this.prevX;
+		else if (this.dir == FisheyeListEffect.VERTICAL)
+			this.vy = this.stage.mouseY - this.prevY;
+	}
+	
+	/**
+	 * 鼠标点击
+	 */
+	public function mouseDown():void
+	{
+		if (this.dir == FisheyeListEffect.HORIZONTAL)
+		{
+			this.mouseDownX = this.stage.mouseX;
+			this.prevX = this.stage.mouseX;
+		}
+		else if (this.dir == FisheyeListEffect.VERTICAL)
+		{ 
+			this.mouseDownY = this.stage.mouseY;
+			this.prevY = this.stage.mouseY;
+		}
+		this.isScroll = false;
+		this.isMouseDown = true;
+		//保存当前显示对象的位置
+		this.setDisplayObjPos();
+	}
+	
+	/**
+	 * 根据索引滚动
+	 * @param	index	索引
+	 */
+	public function scrollByIndex(index:int):void
+	{
+		if (!this.resources) return;
+        if (index < 0) index = 0;
+        if (index > this.resources.length - 1) index = this.resources.length - 1;
+        //保存当前显示对象的位置
+		this.setDisplayObjPos();
+		this.isScroll = true;
+		this.scrollObj = this.resources[index];
+	}
+	
+	/**
+	 * 渲染
+	 */
+	public function render():void 
+	{
+		this.scroll();
+		this.update();
+		this.drag();
+		this.sortDepth();
+	}
+	
+	/**
 	 * 销毁
 	 */
 	public function destroy():void
 	{
-		this.stage.removeEventListener(MouseEvent.MOUSE_DOWN, mouseDonwHandler);
-		this.stage.removeEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
-		this.stage.removeEventListener(Event.ENTER_FRAME, loop);
 		this.stage = null;
-		
 		var length:int = this.sortAry.length;
 		for (var i:int = length - 1; i >= 0; i -= 1) 
 		{
@@ -506,9 +551,21 @@ public class FisheyeListEffect
 			obj.dObj.filters = null;
 			delete this.dObjDict[obj.dObj];
 		}
-		
 		this.dObjDict = null;
 		this.sortAry = null;
+	}
+	
+	/**
+	 * 自动滚动
+	 * @param	speed	滚动速度
+	 */
+	public function autoScroll(speed:Number):void 
+	{
+		this.isAutoScroll = true;
+		if (this.dir == FisheyeListEffect.HORIZONTAL)
+			this.vx = speed;
+		else if (this.dir == FisheyeListEffect.VERTICAL)
+			this.vy = speed;
 	}
 	
 	/**

@@ -3,6 +3,7 @@
 import cn.geckos.effect.FisheyeListEffect;
 import flash.display.DisplayObject;
 import flash.display.Sprite;
+import flash.events.Event;
 import flash.events.KeyboardEvent;
 import flash.events.MouseEvent;
 import flash.utils.getDefinitionByName;
@@ -35,9 +36,42 @@ public class FisheyeListEffectTest extends Sprite
 											FisheyeListEffect.HORIZONTAL);
 		this.fisheyeListEffect.showBlur = true;
 		this.fisheyeListEffect.showAlpha = true;
-        
-        stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDownHandler);
-        
+		
+		
+		this.fisheyeListEffect.autoScroll(-1);
+        this.initEvent();
+	}
+	
+	/**
+	 * 初始化
+	 */
+	private function initEvent():void
+	{
+		this.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDownHandler);
+		this.stage.addEventListener(MouseEvent.MOUSE_DOWN, mouseDonwHandler);
+		this.stage.addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
+		this.stage.addEventListener(Event.ENTER_FRAME, loop);
+	}
+	
+	private function mouseUpHandler(event:MouseEvent):void 
+	{
+		this.fisheyeListEffect.mouseUp();
+	}
+	
+	private function mouseDonwHandler(event:MouseEvent):void 
+	{
+		if (event.target is Sprite)
+		{	
+			var mc:Sprite = event.target as Sprite;
+			var index:int = this.resources.indexOf(mc);
+			this.fisheyeListEffect.scrollByIndex(index);
+		}
+		this.fisheyeListEffect.mouseDown();
+	}
+	
+	private function loop(event:Event):void 
+	{
+		this.fisheyeListEffect.render();
 	}
     
     private function onKeyDownHandler(event:KeyboardEvent):void 
