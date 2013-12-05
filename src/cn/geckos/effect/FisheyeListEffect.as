@@ -227,11 +227,11 @@ public class FisheyeListEffect extends EventDispatcher
 	private function drag():void
 	{
 		if (!this.isMouseDown) return;
-		var vx:Number = this.stage.mouseX - this.mouseDownX;
-		var vy:Number = this.stage.mouseY - this.mouseDownY;
+		this.vx = this.stage.mouseX - this.mouseDownX;
+		this.vy = this.stage.mouseY - this.mouseDownY;
 		this.prevX = this.stage.mouseX;
 		this.prevY = this.stage.mouseY;
-		this.move(vx, vy);
+		this.move(this.vx, this.vy);
 	}
     
     /**
@@ -453,9 +453,9 @@ public class FisheyeListEffect extends EventDispatcher
 				last.scaleX = 1;
 				dObj.scaleX = 1;
                 dObj.x = last.x + last.width * .5 + this.gap + dObj.width * .5;
+				obj.curX = dObj.x - this.vx;
 				last.scaleX = scaleX;
 				dObj.scaleX = dObjScaleX;
-				obj.curX = dObj.x;
 			}
 			else if (dObj.x > this.startX + this.showRange + dObj.width * .5)
 			{
@@ -466,9 +466,9 @@ public class FisheyeListEffect extends EventDispatcher
 				first.scaleX = 1;
 				dObj.scaleX = 1;
                 dObj.x = first.x - first.width * .5 - this.gap - dObj.width * .5;
+				obj.curX = dObj.x - this.vx;
 				first.scaleX = scaleX;
 				dObj.scaleX = dObjScaleX;
-				obj.curX = dObj.x;
 			}
 		}
 		else if (this.dir == FisheyeListEffect.VERTICAL)
