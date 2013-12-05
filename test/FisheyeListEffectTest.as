@@ -55,7 +55,7 @@ public class FisheyeListEffectTest extends Sprite
 	
 	private function mouseUpHandler(event:MouseEvent):void 
 	{
-		this.fisheyeListEffect.mouseUp();
+		//this.fisheyeListEffect.mouseUp();
 	}
 	
 	private function mouseDonwHandler(event:MouseEvent):void 
@@ -66,7 +66,7 @@ public class FisheyeListEffectTest extends Sprite
 			var index:int = this.resources.indexOf(mc);
 			this.fisheyeListEffect.scrollByIndex(index);
 		}
-		this.fisheyeListEffect.mouseDown();
+		//this.fisheyeListEffect.mouseDown();
 	}
 	
 	private function loop(event:Event):void 

@@ -4,6 +4,7 @@ import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;
 import flash.display.Stage;
 import flash.events.Event;
+import flash.events.EventDispatcher;
 import flash.events.MouseEvent;
 import flash.filters.BlurFilter;
 import flash.utils.Dictionary;
@@ -12,7 +13,7 @@ import flash.utils.Dictionary;
  * 图片必须保证相同大小
  * @author Kanon
  */
-public class FisheyeListEffect 
+public class FisheyeListEffect extends EventDispatcher
 {
 	//纵向或横向
 	public static const VERTICAL:int = 0;
@@ -65,6 +66,8 @@ public class FisheyeListEffect
 	private var isAutoScroll:Boolean;
     //是否循环
     private var _isLoop:Boolean;
+	//滚动结束
+	public static const SCROLL_COMPLETE:String = "scrollComplete";
     /**
      * 初始化鱼眼效果构造函数
      * @param	stage           效果所在的舞台
@@ -300,7 +303,7 @@ public class FisheyeListEffect
 	 */
 	private function fixPos(dObj:DisplayObject):void 
 	{
-        return;
+		if (this._isLoop) return;
 		var obj:Object = this.dObjDict[dObj];
 		if (this.dir == FisheyeListEffect.HORIZONTAL)
 		{
@@ -407,6 +410,7 @@ public class FisheyeListEffect
 				{
 					this.vx = 0;
 					this.isScroll = false;
+					this.dispatchEvent(new Event(FisheyeListEffect.SCROLL_COMPLETE));
 				}
 			}
 			else if (this.dir == FisheyeListEffect.VERTICAL)
@@ -416,6 +420,7 @@ public class FisheyeListEffect
 				{
 					this.vy = 0;
 					this.isScroll = false;
+					this.dispatchEvent(new Event(FisheyeListEffect.SCROLL_COMPLETE));
 				}
 			}
 		}
@@ -427,51 +432,79 @@ public class FisheyeListEffect
      */
     private function checkLoop(obj:Object):void
     {
-        //return;
         if (!this._isLoop) return;
         var dObj:DisplayObject = obj.dObj;
         if (!dObj.parent) return;
         var first:DisplayObject = this.resources[0];
-        var last:DisplayObject = this.resources[length - 1];
+        var last:DisplayObject = this.resources[this.resources.length - 1];
+		var scaleX:Number;
+		var scaleY:Number;
+		var dObjScaleX:Number;
+		var dObjScaleY:Number;
 		if (this.dir == FisheyeListEffect.HORIZONTAL)
 		{
-            if (this.vx == 0) return;
 			if (dObj.x < this.startX - dObj.width * .5)
 			{
-                trace("超过左边")
-				//this.resources.shift();
-                //this.resources.push(dObj);
-                trace(last.x + last.width * .5 + this.gap + dObj.width * .5);
-                //dObj.x = last.x + last.width * .5 + this.gap + dObj.width * .5;
+				this.resources.shift();
+                this.resources.push(dObj);
+				//先保存之前的尺寸
+				scaleX = last.scaleX;
+				dObjScaleX = dObj.scaleX;
+				last.scaleX = 1;
+				dObj.scaleX = 1;
+                dObj.x = last.x + last.width * .5 + this.gap + dObj.width * .5;
+				last.scaleX = scaleX;
+				dObj.scaleX = dObjScaleX;
+				obj.curX = dObj.x;
 			}
 			else if (dObj.x > this.startX + this.showRange + dObj.width * .5)
 			{
-                trace("超过右边")
-				//this.resources.pop();
-                //this.resources.unshift(dObj);
-                //dObj.x = first.x + first.width * .5 + this.gap + dObj.width * .5;
+				this.resources.pop();
+                this.resources.unshift(dObj);
+				scaleX = first.scaleX;
+				dObjScaleX = dObj.scaleX;
+				first.scaleX = 1;
+				dObj.scaleX = 1;
+                dObj.x = first.x - first.width * .5 - this.gap - dObj.width * .5;
+				first.scaleX = scaleX;
+				dObj.scaleX = dObjScaleX;
+				obj.curX = dObj.x;
 			}
 		}
 		else if (this.dir == FisheyeListEffect.VERTICAL)
 		{
-            if (this.vy == 0) return;
 			if (dObj.y < this.startY - dObj.height * .5)
 			{
-				//this.resources.shift();
-                //this.resources.push(dObj);
+				this.resources.shift();
+                this.resources.push(dObj);
+				//先保存之前的尺寸
+				scaleY = last.scaleY;
+				dObjScaleY = dObj.scaleY;
+				last.scaleY = 1;
+				dObj.scaleY = 1;
+                dObj.y = last.y + last.height * .5 + this.gap + dObj.height * .5;
+				last.scaleY = scaleY;
+				dObj.scaleY = dObjScaleY;
 			}
 			else if (dObj.y > this.startY + this.showRange + dObj.height * .5)
 			{
-				//this.resources.pop();
-                //this.resources.unshift(dObj);
+				this.resources.pop();
+                this.resources.unshift(dObj);
+				scaleY = first.scaleY;
+				dObjScaleY = dObj.scaleY;
+				last.scaleY = 1;
+				dObj.scaleY = 1;
+                dObj.y = first.y - first.height * .5 - this.gap - dObj.height * .5;
+				last.scaleY = scaleY;
+				dObj.scaleY = dObjScaleY;
 			}
 		}
-        /*first = this.resources[0];
-        last = this.resources[length - 1];
+        first = this.resources[0];
+        last = this.resources[this.resources.length - 1];
         obj.maxRangeX = dObj.x + (this.middlePos - first.x);
         obj.maxRangeY = dObj.y + (this.middlePos - first.y);
         obj.minRangeX = dObj.x - (last.x - this.middlePos);
-        obj.minRangeY = dObj.y - (last.y - this.middlePos);*/
+        obj.minRangeY = dObj.y - (last.y - this.middlePos);
     }
     
     /**
