@@ -22,7 +22,7 @@ public class FisheyeListEffectTest extends Sprite
 		this.resources = new Vector.<DisplayObject>();
 		var mc:Sprite;
 		var MyClass:Class;
-		for (var i:int = 0; i < 19; i += 1)
+		for (var i:int = 0; i < 5; i += 1)
 		{
 			MyClass = getDefinitionByName("mc" + i) as Class;
 			mc = new MyClass() as Sprite;
@@ -36,7 +36,7 @@ public class FisheyeListEffectTest extends Sprite
 											FisheyeListEffect.HORIZONTAL);
 		this.fisheyeListEffect.showBlur = true;
 		this.fisheyeListEffect.showAlpha = true;
-		
+		this.fisheyeListEffect.isLoop = true;
 		
 		this.fisheyeListEffect.autoScroll(-1);
         this.initEvent();

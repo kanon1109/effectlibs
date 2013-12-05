@@ -63,6 +63,8 @@ public class FisheyeListEffect
 	private var scrollObj:DisplayObject;
 	//是否在自动滚动
 	private var isAutoScroll:Boolean;
+    //是否循环
+    private var _isLoop:Boolean;
     /**
      * 初始化鱼眼效果构造函数
      * @param	stage           效果所在的舞台
@@ -161,9 +163,7 @@ public class FisheyeListEffect
 		for (i = 0; i < length; i += 1)
 		{
 			dObj = resources[i];
-			this.dObjDict[dObj] = { prev:prevObj, 
-									next:nextObj, 
-									dObj:dObj, 
+			this.dObjDict[dObj] = { dObj:dObj, 
 									dis: -1,
 									filters: null,
 									parent:dObj.parent, 
@@ -201,6 +201,7 @@ public class FisheyeListEffect
 		var dObj:DisplayObject;
 		for each (obj in this.dObjDict) 
 		{
+			this.checkLoop(obj);
 			this.checkRange(obj);
 			dObj = obj.dObj;
 			dObj.x += this.vx;
@@ -241,6 +242,7 @@ public class FisheyeListEffect
 		var dObj:DisplayObject;
 		for each (obj in this.dObjDict) 
 		{
+            this.checkLoop(obj);
 			this.checkRange(obj);
 			dObj = obj.dObj;
 			if (this.dir == FisheyeListEffect.HORIZONTAL)
@@ -298,6 +300,7 @@ public class FisheyeListEffect
 	 */
 	private function fixPos(dObj:DisplayObject):void 
 	{
+        return;
 		var obj:Object = this.dObjDict[dObj];
 		if (this.dir == FisheyeListEffect.HORIZONTAL)
 		{
@@ -417,6 +420,59 @@ public class FisheyeListEffect
 			}
 		}
 	}
+    
+    /**
+     * 判断循环播放
+     * @param	obj     每一个显示对象保存的数据
+     */
+    private function checkLoop(obj:Object):void
+    {
+        //return;
+        if (!this._isLoop) return;
+        var dObj:DisplayObject = obj.dObj;
+        if (!dObj.parent) return;
+        var first:DisplayObject = this.resources[0];
+        var last:DisplayObject = this.resources[length - 1];
+		if (this.dir == FisheyeListEffect.HORIZONTAL)
+		{
+            if (this.vx == 0) return;
+			if (dObj.x < this.startX - dObj.width * .5)
+			{
+                trace("超过左边")
+				//this.resources.shift();
+                //this.resources.push(dObj);
+                trace(last.x + last.width * .5 + this.gap + dObj.width * .5);
+                //dObj.x = last.x + last.width * .5 + this.gap + dObj.width * .5;
+			}
+			else if (dObj.x > this.startX + this.showRange + dObj.width * .5)
+			{
+                trace("超过右边")
+				//this.resources.pop();
+                //this.resources.unshift(dObj);
+                //dObj.x = first.x + first.width * .5 + this.gap + dObj.width * .5;
+			}
+		}
+		else if (this.dir == FisheyeListEffect.VERTICAL)
+		{
+            if (this.vy == 0) return;
+			if (dObj.y < this.startY - dObj.height * .5)
+			{
+				//this.resources.shift();
+                //this.resources.push(dObj);
+			}
+			else if (dObj.y > this.startY + this.showRange + dObj.height * .5)
+			{
+				//this.resources.pop();
+                //this.resources.unshift(dObj);
+			}
+		}
+        /*first = this.resources[0];
+        last = this.resources[length - 1];
+        obj.maxRangeX = dObj.x + (this.middlePos - first.x);
+        obj.maxRangeY = dObj.y + (this.middlePos - first.y);
+        obj.minRangeX = dObj.x - (last.x - this.middlePos);
+        obj.minRangeY = dObj.y - (last.y - this.middlePos);*/
+    }
     
     /**
      * 根据图片索引显示图片位置
@@ -594,5 +650,14 @@ public class FisheyeListEffect
 	{
 		_showBlur = value;
 	}
+    
+    /**
+     * 是否循环播放
+     */
+    public function get isLoop():Boolean { return _isLoop; };
+    public function set isLoop(value:Boolean):void 
+    {
+        _isLoop = value;
+    }
 }
 }
