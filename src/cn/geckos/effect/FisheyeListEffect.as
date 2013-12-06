@@ -167,6 +167,7 @@ public class FisheyeListEffect extends EventDispatcher
 		{
 			dObj = resources[i];
 			this.dObjDict[dObj] = { dObj:dObj, 
+                                    index:i,
 									dis: -1,
 									filters: null,
 									parent:dObj.parent, 
@@ -540,8 +541,7 @@ public class FisheyeListEffect extends EventDispatcher
         var curDis:Number;
         //当前最短距离
         var minDis:Number = -1;
-        //当前距离最小的索引
-        var index:int = 0;
+        var minDisObj:DisplayObject;
         for (var i:int = 0; i < length; i += 1) 
         {
             dObj = this.resources[i];
@@ -556,10 +556,11 @@ public class FisheyeListEffect extends EventDispatcher
             else if (curDis < minDis) 
             {
                 minDis = curDis;
-                index = i;
+                minDisObj = dObj;
             }
         }
-        return index;
+        var o:Object = this.dObjDict[minDisObj];
+        return o.index;
     }
 	
 	/**
