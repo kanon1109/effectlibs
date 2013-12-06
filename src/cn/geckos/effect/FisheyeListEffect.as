@@ -442,9 +442,12 @@ public class FisheyeListEffect extends EventDispatcher
 				dObjScaleX = dObj.scaleX;
 				last.scaleX = 1;
 				dObj.scaleX = 1;
-                dObj.x = last.x + last.width * .5 + this.gap + dObj.width * .5;
+                dObj.x = last.x + last.width * .5 + this.gap + dObj.width * .5
 				last.scaleX = scaleX;
 				dObj.scaleX = dObjScaleX;
+                last = this.resources[this.resources.length - 1];
+                obj.maxRangeX = dObj.x + (this.middlePos - first.x);
+                obj.minRangeX = dObj.x - (last.x - this.middlePos);
 			}
 			else if (dObj.x > this.startX + this.showRange + dObj.width * .5)
 			{
@@ -457,6 +460,9 @@ public class FisheyeListEffect extends EventDispatcher
                 dObj.x = first.x - first.width * .5 - this.gap - dObj.width * .5;
 				first.scaleX = scaleX;
 				dObj.scaleX = dObjScaleX;
+                first = this.resources[0];
+                obj.maxRangeX = dObj.x + (this.middlePos - first.x);
+                obj.minRangeX = dObj.x - (last.x - this.middlePos);
 			}
 		}
 		else if (this.dir == FisheyeListEffect.VERTICAL)
@@ -473,6 +479,9 @@ public class FisheyeListEffect extends EventDispatcher
                 dObj.y = last.y + last.height * .5 + this.gap + dObj.height * .5;
 				last.scaleY = scaleY;
 				dObj.scaleY = dObjScaleY;
+                last = this.resources[this.resources.length - 1];
+                obj.maxRangeY = dObj.y + (this.middlePos - first.y);
+                obj.minRangeY = dObj.y - (last.y - this.middlePos);
 			}
 			else if (dObj.y > this.startY + this.showRange + dObj.height * .5)
 			{
@@ -485,14 +494,11 @@ public class FisheyeListEffect extends EventDispatcher
                 dObj.y = first.y - first.height * .5 - this.gap - dObj.height * .5;
 				last.scaleY = scaleY;
 				dObj.scaleY = dObjScaleY;
+                first = this.resources[0];
+                obj.maxRangeY = dObj.y + (this.middlePos - first.y);
+                obj.minRangeY = dObj.y - (last.y - this.middlePos);
 			}
 		}
-        first = this.resources[0];
-        last = this.resources[this.resources.length - 1];
-        obj.maxRangeX = dObj.x + (this.middlePos - first.x);
-        obj.maxRangeY = dObj.y + (this.middlePos - first.y);
-        obj.minRangeX = dObj.x - (last.x - this.middlePos);
-        obj.minRangeY = dObj.y - (last.y - this.middlePos);
     }
     
     /**
