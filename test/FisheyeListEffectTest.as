@@ -22,7 +22,7 @@ public class FisheyeListEffectTest extends Sprite
 		this.resources = new Vector.<DisplayObject>();
 		var mc:Sprite;
 		var MyClass:Class;
-		for (var i:int = 0; i < 5; i += 1)
+		for (var i:int = 0; i < 4; i += 1)
 		{
 			MyClass = getDefinitionByName("mc" + i) as Class;
 			mc = new MyClass() as Sprite;
@@ -56,7 +56,7 @@ public class FisheyeListEffectTest extends Sprite
 	
 	private function mouseUpHandler(event:MouseEvent):void 
 	{
-		this.fisheyeListEffect.mouseUp();
+		//this.fisheyeListEffect.mouseUp();
 	}
 	
 	private function mouseDonwHandler(event:MouseEvent):void 
@@ -65,9 +65,9 @@ public class FisheyeListEffectTest extends Sprite
 		{	
 			var mc:Sprite = event.target as Sprite;
 			var index:int = this.resources.indexOf(mc);
-			//this.fisheyeListEffect.scrollByIndex(index);
+			this.fisheyeListEffect.scrollByIndex(index);
 		}
-		this.fisheyeListEffect.mouseDown();
+		//this.fisheyeListEffect.mouseDown();
 	}
 	
 	private function loop(event:Event):void 
@@ -77,7 +77,7 @@ public class FisheyeListEffectTest extends Sprite
     
     private function onKeyDownHandler(event:KeyboardEvent):void 
     {
-        //this.fisheyeListEffect.setPosByIndex(1);
+        this.fisheyeListEffect.setPosByIndex(1);
         trace(this.fisheyeListEffect.getCurPosIndex());
     }
 	

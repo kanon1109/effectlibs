@@ -5,7 +5,6 @@ import flash.display.DisplayObjectContainer;
 import flash.display.Stage;
 import flash.events.Event;
 import flash.events.EventDispatcher;
-import flash.events.MouseEvent;
 import flash.filters.BlurFilter;
 import flash.utils.Dictionary;
 /**
@@ -181,26 +180,10 @@ public class FisheyeListEffect extends EventDispatcher
 	}
 	
 	/**
-	 * 保存当前显示对象的位置
-	 */
-	private function setDisplayObjPos():void
-	{
-		var obj:Object;
-		var dObj:DisplayObject;
-		for each (obj in this.dObjDict) 
-		{
-			dObj = obj.dObj;
-			obj.curX = dObj.x;
-			obj.curY = dObj.y;
-		}
-	}
-	
-	/**
-	 * 抛出
+	 * 更新位置
 	 */
 	private function update():void
 	{
-		if (this.isMouseDown) return;
 		var obj:Object;
 		var dObj:DisplayObject;
 		for each (obj in this.dObjDict) 
@@ -214,6 +197,7 @@ public class FisheyeListEffect extends EventDispatcher
 			this.fixPos(dObj);
 			this.changeProp(dObj);
 		}
+        if (this.isMouseDown) return;
 		if (!this.isAutoScroll &&
 			!this.isScroll)
 		{
@@ -228,11 +212,16 @@ public class FisheyeListEffect extends EventDispatcher
 	private function drag():void
 	{
 		if (!this.isMouseDown) return;
-		this.vx = this.stage.mouseX - this.mouseDownX;
-		this.vy = this.stage.mouseY - this.mouseDownY;
-		this.prevX = this.stage.mouseX;
-		this.prevY = this.stage.mouseY;
-		this.move(this.vx, this.vy);
+        if (this.dir == FisheyeListEffect.HORIZONTAL)
+        {
+            this.vx = this.stage.mouseX - this.prevX;
+            this.prevX = this.stage.mouseX;
+        }
+        else if (this.dir == FisheyeListEffect.VERTICAL)
+        {
+            this.vy = this.stage.mouseY - this.prevY;
+            this.prevY = this.stage.mouseY;
+        }
 	}
     
     /**
@@ -250,9 +239,9 @@ public class FisheyeListEffect extends EventDispatcher
 			this.checkRange(obj);
 			dObj = obj.dObj;
 			if (this.dir == FisheyeListEffect.HORIZONTAL)
-				dObj.x = obj.curX + vx;
+				dObj.x += vx;
 			else if (this.dir == FisheyeListEffect.VERTICAL)
-				dObj.y = obj.curY + vy;
+				dObj.y += vy;
 			//修正位置
 			this.fixPos(dObj);
 			this.changeProp(dObj);
@@ -454,7 +443,6 @@ public class FisheyeListEffect extends EventDispatcher
 				last.scaleX = 1;
 				dObj.scaleX = 1;
                 dObj.x = last.x + last.width * .5 + this.gap + dObj.width * .5;
-				obj.curX = dObj.x - this.vx;
 				last.scaleX = scaleX;
 				dObj.scaleX = dObjScaleX;
 			}
@@ -467,7 +455,6 @@ public class FisheyeListEffect extends EventDispatcher
 				first.scaleX = 1;
 				dObj.scaleX = 1;
                 dObj.x = first.x - first.width * .5 - this.gap - dObj.width * .5;
-				obj.curX = dObj.x - this.vx;
 				first.scaleX = scaleX;
 				dObj.scaleX = dObjScaleX;
 			}
@@ -517,14 +504,21 @@ public class FisheyeListEffect extends EventDispatcher
         if (!this.resources) return;
         if (index < 0) index = 0;
         if (index > this.resources.length - 1) index = this.resources.length - 1;
-        //保存当前显示对象的位置
-		this.setDisplayObjPos();
-        var dObj:DisplayObject = this.resources[index];
-        //计算距离中间位置的距离
-        if (this.dir == FisheyeListEffect.HORIZONTAL)
-            this.move(this.middlePos - dObj.x, 0);
-        else if (this.dir == FisheyeListEffect.VERTICAL)
-            this.move(0, this.middlePos - dObj.y);
+        var obj:Object;
+        var dObj:DisplayObject;
+		for each (obj in this.dObjDict) 
+		{
+            if (index == obj.index)
+            {
+                dObj = obj.dObj;
+                //计算距离中间位置的距离
+                if (this.dir == FisheyeListEffect.HORIZONTAL)
+                    this.move(this.middlePos - dObj.x, 0);
+                else if (this.dir == FisheyeListEffect.VERTICAL)
+                    this.move(0, this.middlePos - dObj.y);
+                break;
+            }
+        }
     }
     
     /**
@@ -552,6 +546,7 @@ public class FisheyeListEffect extends EventDispatcher
             if (minDis < 0) 
             {
                 minDis = curDis;
+                minDisObj = dObj;
             }
             else if (curDis < minDis) 
             {
@@ -593,8 +588,6 @@ public class FisheyeListEffect extends EventDispatcher
 		}
 		this.isScroll = false;
 		this.isMouseDown = true;
-		//保存当前显示对象的位置
-		this.setDisplayObjPos();
 	}
 	
 	/**
@@ -606,8 +599,6 @@ public class FisheyeListEffect extends EventDispatcher
 		if (!this.resources) return;
         if (index < 0) index = 0;
         if (index > this.resources.length - 1) index = this.resources.length - 1;
-        //保存当前显示对象的位置
-		this.setDisplayObjPos();
 		this.isScroll = true;
 		this.scrollObj = this.resources[index];
 	}
