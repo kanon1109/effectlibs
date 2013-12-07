@@ -36,7 +36,6 @@ public class FisheyeListEffectTest extends Sprite
 											FisheyeListEffect.HORIZONTAL);
 		this.fisheyeListEffect.showBlur = true;
 		this.fisheyeListEffect.showAlpha = true;
-		this.fisheyeListEffect.isLoop = true;
 		this.fisheyeListEffect.addEventListener(FisheyeListEffect.SCROLL_COMPLETE, scrollCompleteHandler);
 		
 		this.fisheyeListEffect.autoScroll( -1);
@@ -62,7 +61,7 @@ public class FisheyeListEffectTest extends Sprite
 	
 	private function mouseUpHandler(event:MouseEvent):void 
 	{
-		this.fisheyeListEffect.mouseUp();
+		//this.fisheyeListEffect.mouseUp();
 	}
 	
 	private function mouseDonwHandler(event:MouseEvent):void 
@@ -71,9 +70,9 @@ public class FisheyeListEffectTest extends Sprite
 		{	
 			var mc:Sprite = event.target as Sprite;
 			var index:int = this.resources.indexOf(mc);
-			//this.fisheyeListEffect.scrollByIndex(index);
+			this.fisheyeListEffect.scrollByIndex(index);
 		}
-		this.fisheyeListEffect.mouseDown();
+		//this.fisheyeListEffect.mouseDown();
 	}
 	
 	private function loop(event:Event):void 

@@ -63,8 +63,6 @@ public class FisheyeListEffect extends EventDispatcher
 	private var scrollObj:DisplayObject;
 	//是否在自动滚动
 	private var isAutoScroll:Boolean;
-    //是否循环
-    private var _isLoop:Boolean;
 	//滚动结束
 	public static const SCROLL_COMPLETE:String = "scrollComplete";
     /**
@@ -188,7 +186,6 @@ public class FisheyeListEffect extends EventDispatcher
 		var dObj:DisplayObject;
 		for each (obj in this.dObjDict) 
 		{
-			this.checkLoop(obj);
 			this.checkRange(obj);
 			dObj = obj.dObj;
 			dObj.x += this.vx;
@@ -198,8 +195,7 @@ public class FisheyeListEffect extends EventDispatcher
 			this.changeProp(dObj);
 		}
         if (this.isMouseDown) return;
-		if (!this.isAutoScroll &&
-			!this.isScroll)
+		if (!this.isScroll)
 		{
 			this.vx *= this._friction;
 			this.vy *= this._friction;
@@ -235,7 +231,6 @@ public class FisheyeListEffect extends EventDispatcher
 		var dObj:DisplayObject;
 		for each (obj in this.dObjDict) 
 		{
-            this.checkLoop(obj);
 			this.checkRange(obj);
 			dObj = obj.dObj;
 			if (this.dir == FisheyeListEffect.HORIZONTAL)
@@ -293,7 +288,6 @@ public class FisheyeListEffect extends EventDispatcher
 	 */
 	private function fixPos(dObj:DisplayObject):void 
 	{
-		if (this._isLoop) return;
 		var obj:Object = this.dObjDict[dObj];
 		if (this.dir == FisheyeListEffect.HORIZONTAL)
 		{
@@ -415,91 +409,6 @@ public class FisheyeListEffect extends EventDispatcher
 			}
 		}
 	}
-    
-    /**
-     * 判断循环播放
-     * @param	obj     每一个显示对象保存的数据
-     */
-    private function checkLoop(obj:Object):void
-    {
-        if (!this._isLoop) return;
-        var dObj:DisplayObject = obj.dObj;
-        if (!dObj.parent) return;
-        var first:DisplayObject = this.resources[0];
-        var last:DisplayObject = this.resources[this.resources.length - 1];
-		var scaleX:Number;
-		var scaleY:Number;
-		var dObjScaleX:Number;
-		var dObjScaleY:Number;
-		if (this.dir == FisheyeListEffect.HORIZONTAL)
-		{
-			if (dObj.x < this.startX - dObj.width * .5)
-			{
-				this.resources.shift();
-                this.resources.push(dObj);
-				//先保存之前的尺寸
-				scaleX = last.scaleX;
-				dObjScaleX = dObj.scaleX;
-				last.scaleX = 1;
-				dObj.scaleX = 1;
-                dObj.x = last.x + last.width * .5 + this.gap + dObj.width * .5
-				last.scaleX = scaleX;
-				dObj.scaleX = dObjScaleX;
-                last = this.resources[this.resources.length - 1];
-                obj.maxRangeX = dObj.x + (this.middlePos - first.x);
-                obj.minRangeX = dObj.x - (last.x - this.middlePos);
-			}
-			else if (dObj.x > this.startX + this.showRange + dObj.width * .5)
-			{
-				this.resources.pop();
-                this.resources.unshift(dObj);
-				scaleX = first.scaleX;
-				dObjScaleX = dObj.scaleX;
-				first.scaleX = 1;
-				dObj.scaleX = 1;
-                dObj.x = first.x - first.width * .5 - this.gap - dObj.width * .5;
-				first.scaleX = scaleX;
-				dObj.scaleX = dObjScaleX;
-                first = this.resources[0];
-                obj.maxRangeX = dObj.x + (this.middlePos - first.x);
-                obj.minRangeX = dObj.x - (last.x - this.middlePos);
-			}
-		}
-		else if (this.dir == FisheyeListEffect.VERTICAL)
-		{
-			if (dObj.y < this.startY - dObj.height * .5)
-			{
-				this.resources.shift();
-                this.resources.push(dObj);
-				//先保存之前的尺寸
-				scaleY = last.scaleY;
-				dObjScaleY = dObj.scaleY;
-				last.scaleY = 1;
-				dObj.scaleY = 1;
-                dObj.y = last.y + last.height * .5 + this.gap + dObj.height * .5;
-				last.scaleY = scaleY;
-				dObj.scaleY = dObjScaleY;
-                last = this.resources[this.resources.length - 1];
-                obj.maxRangeY = dObj.y + (this.middlePos - first.y);
-                obj.minRangeY = dObj.y - (last.y - this.middlePos);
-			}
-			else if (dObj.y > this.startY + this.showRange + dObj.height * .5)
-			{
-				this.resources.pop();
-                this.resources.unshift(dObj);
-				scaleY = first.scaleY;
-				dObjScaleY = dObj.scaleY;
-				last.scaleY = 1;
-				dObj.scaleY = 1;
-                dObj.y = first.y - first.height * .5 - this.gap - dObj.height * .5;
-				last.scaleY = scaleY;
-				dObj.scaleY = dObjScaleY;
-                first = this.resources[0];
-                obj.maxRangeY = dObj.y + (this.middlePos - first.y);
-                obj.minRangeY = dObj.y - (last.y - this.middlePos);
-			}
-		}
-    }
     
     /**
      * 根据图片索引显示图片位置
@@ -681,14 +590,5 @@ public class FisheyeListEffect extends EventDispatcher
 	{
 		_showBlur = value;
 	}
-    
-    /**
-     * 是否循环播放
-     */
-    public function get isLoop():Boolean { return _isLoop; };
-    public function set isLoop(value:Boolean):void 
-    {
-        _isLoop = value;
-    }
 }
 }
