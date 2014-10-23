@@ -229,7 +229,7 @@ class Flame extends Sprite
 	{
 		this.x += this.vx;
 		this.y += this.vy;
-		this.scaleX += this.alphaSpeed;
+		this.scaleX += this.scaleSpeed;
 		this.scaleY = this.scaleX;
 		if (this.scaleX > this.maxScale) this.scaleX = this.maxScale;
 		if (this.mathDistance(this.x, this.y, this.startX, this.startY) >= this.distance * .5)
