@@ -20,7 +20,7 @@ public class FlameGunEffect
 	private var minAlpha:Number;
 	//最大射程距离
 	private var distance:Number;
-	//浮动
+	//发射位置的浮动
 	private var floating:Number;
 	//火焰弹列表
 	private var flameList:Array;
@@ -30,6 +30,10 @@ public class FlameGunEffect
 	private var _startX:Number;
 	//发射位置y坐标
 	private var _startY:Number;
+	//缩放速度
+	private var scaleSpeed:Number;
+	//透明度速度
+	private var alphaSpeed:Number;
 	//状态
 	private var _status:int;
 	//开火状态
@@ -41,7 +45,8 @@ public class FlameGunEffect
 								   startX:Number = 0, startY:Number = 0,
 								   speed:Number = 5,  rotation:Number = 0, 
 								   maxScale:Number = 1, minAlpha:Number = .1, 
-								   distance:Number = 100, floating:Number = 10) 
+								   distance:Number = 100, floating:Number = 10, 
+								   scaleSpeed:Number = .1, alphaSpeed:Number = .05) 
 	{
 		this.parent = parent;
 		this.flameSrcName = flameSrcName;
@@ -53,6 +58,8 @@ public class FlameGunEffect
 		this.move(startX, startY);
 		this.flameList = [];
 		this.floating = floating;
+		this.scaleSpeed = scaleSpeed;
+		this.alphaSpeed = alphaSpeed;
 	}
 	
 	/**
@@ -78,7 +85,7 @@ public class FlameGunEffect
 		var flameSpt:Flame = new Flame(this.flameSrcName, vx, vy, 
 										this.startX, this.startY, 
 										this.maxScale, this.minAlpha, 
-										this.distance);
+										this.distance, this.scaleSpeed, this.alphaSpeed);
 		flameSpt.rotation = this.rotation;
 		this.flameList.push(flameSpt);
 		this.parent.addChild(flameSpt);
@@ -188,9 +195,14 @@ class Flame extends Sprite
 	private var minAlpha:Number;
 	//最大射程距离
 	private var distance:Number;
+	//缩放速度
+	private var scaleSpeed:Number;
+	//透明度速度
+	private var alphaSpeed:Number;
 	public function Flame(flameSrcName:String, vx:Number, vy:Number, 
 							startX:Number, startY:Number, 
-							maxScale:Number, minAlpha:Number, distance:Number)
+							maxScale:Number, minAlpha:Number, distance:Number, 
+							scaleSpeed:Number, alphaSpeed:Number)
 	{
 		var FlameClass:Class = getDefinitionByName(flameSrcName) as Class;
 		this.startX = startX;
@@ -204,6 +216,8 @@ class Flame extends Sprite
 		this.maxScale = maxScale;
 		this.minAlpha = minAlpha;
 		this.distance = distance;
+		this.scaleSpeed = scaleSpeed;
+		this.alphaSpeed = alphaSpeed;
 		this.spt = new FlameClass() as Sprite;
 		this.addChild(spt);
 	}
@@ -215,11 +229,11 @@ class Flame extends Sprite
 	{
 		this.x += this.vx;
 		this.y += this.vy;
-		this.scaleX += .1;
+		this.scaleX += this.alphaSpeed;
 		this.scaleY = this.scaleX;
 		if (this.scaleX > this.maxScale) this.scaleX = this.maxScale;
 		if (this.mathDistance(this.x, this.y, this.startX, this.startY) >= this.distance * .5)
-			this.alpha -= .05;
+			this.alpha -= this.alphaSpeed;
 		if (this.alpha < this.minAlpha) this.alpha = this.minAlpha;
 	}
 	
