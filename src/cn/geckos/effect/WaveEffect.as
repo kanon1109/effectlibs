@@ -49,7 +49,7 @@ public class WaveEffect
 	{
 		if (this.bitmapData) this.bitmapData.dispose();
 		this.bitmapData = null;
-		this.target.filters = null;
+		if (this.target) this.target.filters = null;
 	}
 }
 }
