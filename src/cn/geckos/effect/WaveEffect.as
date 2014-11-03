@@ -33,12 +33,23 @@ public class WaveEffect
 	 */
 	public function render():void
 	{
+		if (!this.bitmapData) return;
 		var filterList:Array = this.target.filters;
 		var point:Point = new Point(this.offset, this.offset * .1);
 		this.bitmapData.perlinNoise(45, 5, 3, 10, true, false, 7, true, 
 									[point, point]);
 		this.target.filters = filterList;
 		this.offset += this.speed;
+	}
+	
+	/**
+	 * 销毁
+	 */
+	public function destroy():void
+	{
+		if (this.bitmapData) this.bitmapData.dispose();
+		this.bitmapData = null;
+		this.target.filters = null;
 	}
 }
 }
