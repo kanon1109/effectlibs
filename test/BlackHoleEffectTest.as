@@ -2,10 +2,13 @@ package
 {
 import cn.geckos.effect.BlackHoleEffect;
 import cn.geckos.event.BlackHoleEvent;
+import com.greensock.TweenMax;
 import flash.display.DisplayObject;
+import flash.display.MovieClip;
 import flash.display.Sprite;
 import flash.events.Event;
 import flash.events.MouseEvent;
+import flash.utils.getDefinitionByName;
 /**
  * ...黑洞测试
  * @author Kanon
@@ -15,19 +18,30 @@ public class BlackHoleEffectTest extends Sprite
 	private var blackHole:BlackHoleEffect;
 	private var ary:Array;
 	private var holeList:Array;
+	private var holeMcList:Array;
+	private var holeSpt:Sprite;
+	private var btnSpt:Sprite;
+	private var mcSpt:Sprite;
 	public function BlackHoleEffectTest() 
 	{
 		this.ary = [];
 		this.holeList = [];
-		var sp:Sprite;
-		for (var i:int = 1; this.getChildByName("mc" + i); i++) 
-		{
-			sp = this.getChildByName("mc" + i) as Sprite;
-			ary.push(sp);
-		}
-		
+		this.holeMcList = [];
+		this.holeSpt = new Sprite();
+		this.addChild(this.holeSpt);
+		this.mcSpt = new Sprite();
+		this.addChild(this.mcSpt);
+		this.addChild(btn);
 		this.addEventListener(Event.ENTER_FRAME, loop);
 		stage.addEventListener(MouseEvent.CLICK, mouseClickHandler);
+		btn.addEventListener(MouseEvent.CLICK, btnClickHandler);
+		this.addObj();
+	}
+	
+	private function btnClickHandler(event:MouseEvent):void 
+	{
+		event.stopPropagation();
+		this.addObj();
 	}
 	
 	private function mouseClickHandler(event:MouseEvent):void 
@@ -39,14 +53,33 @@ public class BlackHoleEffectTest extends Sprite
 		blackHole.addSubstanceList(ary);
 		blackHole.addHole(mouseX, mouseY);
 		this.holeList.push(blackHole);
-		var spt:Sprite = new Sprite();
-		blackHole.setDebugContainer(spt);
-		this.addChild(spt);
+		
+		var bhMc:MovieClip = new BlackHole();
+		bhMc.x = mouseX;
+		bhMc.y = mouseY;
+		bhMc.scaleX = 0;
+		bhMc.scaleY = 0;
+		this.holeSpt.addChild(bhMc);
+		this.holeMcList.push(bhMc);
+		TweenMax.to(bhMc, .2, { scaleX:1, scaleY:1 } );
+		TweenMax.to(bhMc, 4, { rotation:360, repeat: -1 } );
 	}
 	
 	private function attenuationHandler(event:BlackHoleEvent):void 
 	{
 		//这里可以将黑洞的显示效果慢慢缩小。
+		var blackHole:BlackHoleEffect = event.currentTarget as BlackHoleEffect;
+		var length:int = this.holeList.length;
+		for (var i:int = length - 1; i >= 0; i--) 
+		{
+			var bh:BlackHoleEffect = this.holeList[i];
+			if (bh == blackHole)
+			{
+				var bhMc:MovieClip = this.holeMcList[i];
+				TweenMax.to(bhMc, 2, { scaleX:0, scaleY:0 } );
+				break;
+			}
+		}
 	}
 	
 	private function blackHoleOverHandler(event:BlackHoleEvent):void 
@@ -61,6 +94,11 @@ public class BlackHoleEffectTest extends Sprite
 			if (bh == blackHole)
 			{
 				this.holeList.splice(i, 1);
+				var bhMc:MovieClip = this.holeMcList[i];
+				if (bhMc && bhMc.parent)
+					bhMc.parent.removeChild(bhMc);
+				this.holeMcList.splice(i, 1);
+				break;
 			}
 		}
 	}
@@ -78,9 +116,27 @@ public class BlackHoleEffectTest extends Sprite
 		{
 			var blackHole:BlackHoleEffect = this.holeList[i];
 			blackHole.update();
-			blackHole.debug();
 		}
 	}
 	
+	private function addObj():void
+	{
+		var num:int = randnum(10, 20);
+		for (var i:int = 1; i <= num; i++) 
+		{
+			var index:int = randnum(1, 4);
+			var myClass:Class = getDefinitionByName("mc" + index) as Class;
+			var sp:Sprite = new myClass();
+			sp.x = randnum(0, stage.stageWidth);
+			sp.y = randnum(0, stage.stageHeight);
+			this.ary.push(sp);
+			mcSpt.addChild(sp);
+		}
+	}
+	
+	public function randnum(a:Number, b:Number):Number
+    {
+        return Math.random() * (b - a) + a;
+    }
 }
 }

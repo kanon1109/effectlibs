@@ -43,7 +43,7 @@ public class BlackHoleEffect extends EventDispatcher
 	//调试容器
 	private var debugSprite:Sprite;
 	//结束后的角速度
-	public function BlackHoleEffect(g:Number = 10, range:Number = 300, angleSpeed:Number = 5, time:int = 3000, fps:int = 60) 
+	public function BlackHoleEffect(g:Number = 10, range:Number = 400, angleSpeed:Number = 5, time:int = 2000, fps:int = 60) 
 	{
 		this.g = g;
 		this.f = f;
