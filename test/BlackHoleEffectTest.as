@@ -35,6 +35,7 @@ public class BlackHoleEffectTest extends Sprite
 		var blackHole:BlackHoleEffect = new BlackHoleEffect();
 		blackHole.addEventListener(BlackHoleEvent.IN_HOLE, inHoleHandler);
 		blackHole.addEventListener(BlackHoleEvent.OVER, blackHoleOverHandler);
+		blackHole.addEventListener(BlackHoleEvent.ATTENUATION, attenuationHandler);
 		blackHole.addSubstanceList(ary);
 		blackHole.addHole(mouseX, mouseY);
 		this.holeList.push(blackHole);
@@ -43,8 +44,14 @@ public class BlackHoleEffectTest extends Sprite
 		this.addChild(spt);
 	}
 	
+	private function attenuationHandler(event:BlackHoleEvent):void 
+	{
+		//这里可以将黑洞的显示效果慢慢缩小。
+	}
+	
 	private function blackHoleOverHandler(event:BlackHoleEvent):void 
 	{
+		//黑洞完全消失，可以将黑洞显示对象删除
 		var blackHole:BlackHoleEffect = event.currentTarget as BlackHoleEffect;
 		blackHole.destroy();
 		var length:int = this.holeList.length;

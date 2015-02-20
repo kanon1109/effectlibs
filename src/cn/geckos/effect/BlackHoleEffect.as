@@ -2,11 +2,11 @@ package cn.geckos.effect
 {
 import cn.geckos.event.BlackHoleEvent;
 import flash.display.DisplayObject;
-import flash.display.Graphics;
 import flash.display.Sprite;
 import flash.events.EventDispatcher;
 /**
  * ...黑洞效果
+ * 黑洞持续时间结束后会进入衰减期，衰减期内不会发生吸入。
  * @author Kanon
  */
 public class BlackHoleEffect extends EventDispatcher
@@ -43,7 +43,7 @@ public class BlackHoleEffect extends EventDispatcher
 	//调试容器
 	private var debugSprite:Sprite;
 	//结束后的角速度
-	public function BlackHoleEffect(g:Number = 10, range:Number = 300, angleSpeed:Number = 5, time:int = 1000, fps:int = 60) 
+	public function BlackHoleEffect(g:Number = 10, range:Number = 300, angleSpeed:Number = 5, time:int = 3000, fps:int = 60) 
 	{
 		this.g = g;
 		this.f = f;
@@ -75,6 +75,7 @@ public class BlackHoleEffect extends EventDispatcher
 	 */
 	public function addSubstanceList(ary:Array):void
 	{
+		if (!this.subList) return;
 		this.subList = this.subList.concat(ary);
 	}
 	
@@ -84,6 +85,7 @@ public class BlackHoleEffect extends EventDispatcher
 	public function update():void
 	{
 		if (!this.isStart) return;
+		if (!this.subList) return;
 		var length:int = this.subList.length;
 		var obj:DisplayObject;
 		var dis:Number;
@@ -136,6 +138,7 @@ public class BlackHoleEffect extends EventDispatcher
 			this.timeFrame = 0;
 			//黑洞持续时间结束
 			this.isOver = true;
+			this.dispatchEvent(new BlackHoleEvent(BlackHoleEvent.ATTENUATION));
 		}
 		if (this.isOver)
 		{
