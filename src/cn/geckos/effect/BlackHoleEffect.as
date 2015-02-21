@@ -42,7 +42,8 @@ public class BlackHoleEffect extends EventDispatcher
 	private var f:Number = .99;
 	//调试容器
 	private var debugSprite:Sprite;
-	//结束后的角速度
+	//玩家可以设置一个附加在黑洞对象上的数据对象可以是显示对象或者其他类的对象
+	public var useData:Object;
 	public function BlackHoleEffect(g:Number = 10, range:Number = 400, angleSpeed:Number = 5, time:int = 2000, fps:int = 60) 
 	{
 		this.g = g;

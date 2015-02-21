@@ -9,6 +9,7 @@ import flash.display.Sprite;
 import flash.events.Event;
 import flash.events.MouseEvent;
 import flash.utils.getDefinitionByName;
+import net.hires.debug.Stats;
 /**
  * ...黑洞测试
  * @author Kanon
@@ -18,7 +19,6 @@ public class BlackHoleEffectTest extends Sprite
 	private var blackHole:BlackHoleEffect;
 	private var ary:Array;
 	private var holeList:Array;
-	private var holeMcList:Array;
 	private var holeSpt:Sprite;
 	private var btnSpt:Sprite;
 	private var mcSpt:Sprite;
@@ -26,12 +26,14 @@ public class BlackHoleEffectTest extends Sprite
 	{
 		this.ary = [];
 		this.holeList = [];
-		this.holeMcList = [];
 		this.holeSpt = new Sprite();
 		this.addChild(this.holeSpt);
 		this.mcSpt = new Sprite();
 		this.addChild(this.mcSpt);
 		this.addChild(btn);
+		
+		this.addChild(new Stats());
+		
 		this.addEventListener(Event.ENTER_FRAME, loop);
 		stage.addEventListener(MouseEvent.CLICK, mouseClickHandler);
 		btn.addEventListener(MouseEvent.CLICK, btnClickHandler);
@@ -60,7 +62,7 @@ public class BlackHoleEffectTest extends Sprite
 		bhMc.scaleX = 0;
 		bhMc.scaleY = 0;
 		this.holeSpt.addChild(bhMc);
-		this.holeMcList.push(bhMc);
+		blackHole.useData = bhMc;
 		TweenMax.to(bhMc, .2, { scaleX:1, scaleY:1 } );
 		TweenMax.to(bhMc, 4, { rotation:360, repeat: -1 } );
 	}
@@ -75,7 +77,7 @@ public class BlackHoleEffectTest extends Sprite
 			var bh:BlackHoleEffect = this.holeList[i];
 			if (bh == blackHole)
 			{
-				var bhMc:MovieClip = this.holeMcList[i];
+				var bhMc:MovieClip = bh.useData as MovieClip;
 				TweenMax.to(bhMc, 2, { scaleX:0, scaleY:0 } );
 				break;
 			}
@@ -94,10 +96,10 @@ public class BlackHoleEffectTest extends Sprite
 			if (bh == blackHole)
 			{
 				this.holeList.splice(i, 1);
-				var bhMc:MovieClip = this.holeMcList[i];
+				var bhMc:MovieClip = bh.useData as MovieClip;
+				bh.useData = null;
 				if (bhMc && bhMc.parent)
 					bhMc.parent.removeChild(bhMc);
-				this.holeMcList.splice(i, 1);
 				break;
 			}
 		}
