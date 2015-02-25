@@ -27,7 +27,7 @@ public class BlackHoleEffect extends EventDispatcher
 	//是否结束
 	private var isOver:Boolean;
 	//最短距离
-	private var minDis = 15;
+	private var minDis:int = 15;
 	//持续时间（毫秒）
 	private var time:int;
 	//持续时间（帧）

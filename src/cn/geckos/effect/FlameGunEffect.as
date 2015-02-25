@@ -1,4 +1,4 @@
-package cn.geckos.effect 
+﻿package cn.geckos.effect 
 {
 import flash.display.DisplayObjectContainer;
 import flash.display.Sprite;
