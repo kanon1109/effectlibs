@@ -134,7 +134,7 @@ public class BlackHoleEffect extends EventDispatcher
 			}
 		}
 		this.timeFrame--
-		if (this.timeFrame <= 0)
+		if (this.timeFrame <= 0 && !this.isOver)
 		{
 			this.timeFrame = 0;
 			//黑洞持续时间结束
