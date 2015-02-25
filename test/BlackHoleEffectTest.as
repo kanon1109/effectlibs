@@ -71,17 +71,8 @@ public class BlackHoleEffectTest extends Sprite
 	{
 		//这里可以将黑洞的显示效果慢慢缩小。
 		var blackHole:BlackHoleEffect = event.currentTarget as BlackHoleEffect;
-		var length:int = this.holeList.length;
-		for (var i:int = length - 1; i >= 0; i--) 
-		{
-			var bh:BlackHoleEffect = this.holeList[i];
-			if (bh == blackHole)
-			{
-				var bhMc:MovieClip = bh.useData as MovieClip;
-				TweenMax.to(bhMc, 2, { scaleX:0, scaleY:0 } );
-				break;
-			}
-		}
+		var bhMc:MovieClip = blackHole.useData as MovieClip;
+		TweenMax.to(bhMc, 2, { scaleX:0, scaleY:0 } );
 	}
 	
 	private function blackHoleOverHandler(event:BlackHoleEvent):void 
