@@ -52,7 +52,6 @@ public class BlackHoleEffect extends EventDispatcher
 		this.angleSpeed = angleSpeed;
 		this.time = time;
 		this.fps = fps;
-		this.subList = [];
 	}
 	
 	/**
@@ -76,8 +75,7 @@ public class BlackHoleEffect extends EventDispatcher
 	 */
 	public function addSubstanceList(ary:Array):void
 	{
-		if (!this.subList) return;
-		this.subList = this.subList.concat(ary);
+		this.subList = ary;
 	}
 	
 	/**
@@ -106,6 +104,8 @@ public class BlackHoleEffect extends EventDispatcher
 								new BlackHoleEvent(BlackHoleEvent.IN_HOLE, obj);
 						this.dispatchEvent(blackHoleEvent);
 						this.subList.splice(i, 1);
+						//这里外部可能将物体销毁，所以循环下面不做处理。
+						continue;
 					}
 					if (speed > dis) speed = dis;
 				}
