@@ -103,7 +103,6 @@ public class BlackHoleEffect extends EventDispatcher
 						var blackHoleEvent:BlackHoleEvent = 
 								new BlackHoleEvent(BlackHoleEvent.IN_HOLE, obj);
 						this.dispatchEvent(blackHoleEvent);
-						this.subList.splice(i, 1);
 						//这里外部可能将物体销毁，所以循环下面不做处理。
 						continue;
 					}

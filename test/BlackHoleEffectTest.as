@@ -99,6 +99,16 @@ public class BlackHoleEffectTest extends Sprite
 	private function inHoleHandler(event:BlackHoleEvent):void 
 	{
 		var dObj:DisplayObject = event.dObj;
+		var length:int = this.ary.length;
+		for (var i:int = 0; i < length; i++) 
+		{
+			var sp:Sprite = this.ary[i];
+			if (dObj == sp)
+			{
+				this.ary.splice(i, 1);
+				break;
+			}
+		}
 		if (dObj.parent) dObj.parent.removeChild(dObj);
 	}
 	
