@@ -47,7 +47,6 @@ public class BlackHoleEffect extends EventDispatcher
 	public function BlackHoleEffect(g:Number = 10, range:Number = 400, angleSpeed:Number = 5, time:int = 2000, fps:int = 60) 
 	{
 		this.g = g;
-		this.f = f;
 		this.range = range;
 		this.angleSpeed = angleSpeed;
 		this.time = time;
